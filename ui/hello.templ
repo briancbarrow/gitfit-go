@@ -1,5 +1,7 @@
 package ui
 
-templ HelloTempl(name string) {
-	<div>Hello, { name }. How are you?</div>
+templ Hello(name string) {
+	@base() {
+		<div class="font-bold m-4">Hello, { name }. How are you?</div>
+	}
 }

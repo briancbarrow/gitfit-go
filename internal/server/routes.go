@@ -11,8 +11,13 @@ import (
 )
 
 func (app *application) RegisterRoutes() http.Handler {
-	component := ui.HelloTempl("Brian")
+	component := ui.Hello("Brian")
 	r := httprouter.New()
+
+	fileServer := http.FileServer(http.FS(ui.Files))
+	r.Handler(http.MethodGet, "/css/*filepath", fileServer)
+	r.Handler(http.MethodGet, "/static/*filepath", fileServer)
+
 	r.HandlerFunc(http.MethodGet, "/", app.helloWorldHandler)
 	r.Handler(http.MethodGet, "/web", templ.Handler(component))
 
