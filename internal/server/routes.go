@@ -7,19 +7,21 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/briancbarrow/gitfit-go/ui"
+	"github.com/briancbarrow/gitfit-go/ui/pages"
 	"github.com/julienschmidt/httprouter"
 )
 
 func (app *application) RegisterRoutes() http.Handler {
-	component := ui.Hello("Brian")
 	r := httprouter.New()
 
 	fileServer := http.FileServer(http.FS(ui.Files))
 	r.Handler(http.MethodGet, "/css/*filepath", fileServer)
 	r.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
-	r.HandlerFunc(http.MethodGet, "/", app.helloWorldHandler)
-	r.Handler(http.MethodGet, "/web", templ.Handler(component))
+	// r.HandlerFunc(http.MethodGet, "/", app.helloWorldHandler)
+	r.Handler(http.MethodGet, "/", templ.Handler(pages.Home()))
+	r.Handler(http.MethodGet, "/login", templ.Handler(pages.LoginPage()))
+	r.Handler(http.MethodGet, "/register", templ.Handler(pages.Register()))
 
 	return r
 }
