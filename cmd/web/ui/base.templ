@@ -12,33 +12,16 @@ templ Base() {
 			<link rel="stylesheet" href="/css/output.css"/>
 		</head>
 		<body class="h-full">
-			@header()
+			@Header()
 			<main>
 				{ children... }
 			</main>
-			@footer()
-			<script>
-		    document.addEventListener('DOMContentLoaded', function () {
-		    // Get the necessary elements
-		    let openMenuButton = document.getElementById('openMenu');
-        let closeMenuButton = document.getElementById('closeMenu');
-		    let mobileMenu = document.getElementById('mobileMenu');
-		    // Add click event listener to the mobile menu button
-		    openMenuButton.addEventListener('click', function () {
-		      // Toggle the visibility of the mobile menu
-		      mobileMenu.classList.remove('hidden');
-		    });
-
-        closeMenuButton.addEventListener('click', function() {
-          mobileMenu.classList.add('hidden')
-        })
-		  });
-		</script>
+			@Footer()
 		</body>
 	</html>
 }
 
-templ footer() {
+templ Footer() {
 	<footer class="bg-white mt-auto">
 		<div class="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
 			<div class="flex justify-center space-x-6 md:order-2">
@@ -80,7 +63,7 @@ templ footer() {
 	</footer>
 }
 
-templ header() {
+templ Header() {
 	<header class="bg-white">
 		<nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
 			<div class="flex lg:flex-1">
@@ -138,5 +121,22 @@ templ header() {
 				</div>
 			</div>
 		</div>
+		<script>
+		    document.addEventListener('DOMContentLoaded', function () {
+		    // Get the necessary elements
+		    let openMenuButton = document.getElementById('openMenu');
+        let closeMenuButton = document.getElementById('closeMenu');
+		    let mobileMenu = document.getElementById('mobileMenu');
+		    // Add click event listener to the mobile menu button
+		    openMenuButton.addEventListener('click', function () {
+		      // Toggle the visibility of the mobile menu
+		      mobileMenu.classList.remove('hidden');
+		    });
+
+        closeMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.add('hidden')
+        })
+		  });
+		</script>
 	</header>
 }
