@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/briancbarrow/gitfit-go/web/ui"
-	"github.com/briancbarrow/gitfit-go/web/ui/pages"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -21,7 +21,7 @@ func (app *application) RegisterRoutes() http.Handler {
 	r.Handler(http.MethodGet, "/login", templ.Handler(pages.LoginPage(pages.UserLoginForm{})))
 	r.HandlerFunc(http.MethodPost, "/login", app.userLoginPost)
 	r.Handler(http.MethodGet, "/register", templ.Handler(pages.Register(pages.UserRegisterForm{})))
-	r.HandlerFunc(http.MethodPost, "/register", app.userRegisterPost)
+	r.HandlerFunc(http.MethodPost, "/register", app.userRegisterPostStytch)
 	r.Handler(http.MethodGet, "/dashboard", templ.Handler(pages.Dashboard()))
 
 	return r

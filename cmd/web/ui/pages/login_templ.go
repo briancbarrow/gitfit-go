@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/briancbarrow/gitfit-go/web/ui"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 )
 
 func LoginPage(form UserLoginForm) templ.Component {

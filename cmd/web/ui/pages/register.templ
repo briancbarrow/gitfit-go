@@ -1,13 +1,10 @@
 package pages
 
 import (
-	"github.com/briancbarrow/gitfit-go/web/ui"
-	"fmt"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 )
 
 func errorIsBlank(err string) bool {
-	fmt.Print("\nERR", err)
-	fmt.Print("\nERR ###", err == "")
 	return err == ""
 }
 
@@ -18,6 +15,13 @@ templ Register(form UserRegisterForm) {
 				<h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
 			</div>
 			<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+				if len(form.NonFieldErrors) > 0 {
+					<ul class="p-4 mb-2 bg-red-200 border-red text-red rounded">
+						for _, error := range form.NonFieldErrors {
+							<li>{ error }</li>
+						}
+					</ul>
+				}
 				<form class="space-y-6" action="/register" method="POST">
 					<div>
 						<label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
@@ -33,8 +37,9 @@ templ Register(form UserRegisterForm) {
 						</div>
 					</div>
 					<div>
-						<div class="flex items-center justify-between">
+						<div class="flex flex-col justify-between">
 							<label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+							<label class={ "error", templ.KV("block text-sm font-medium text-red-800", !errorIsBlank(form.Validator.FieldErrors["password"])), templ.KV("hidden", errorIsBlank(form.Validator.FieldErrors["password"])) }>{ form.Validator.FieldErrors["password"] }</label>
 						</div>
 						<div class="mt-2">
 							<input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
