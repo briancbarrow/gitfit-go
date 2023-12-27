@@ -121,7 +121,7 @@ templ Header() {
 				</div>
 			</div>
 		</div>
-		<script>
+		<script nonce={ templ.EscapeString(ctx.Value(NonceValue).(string)) }>
 		    document.addEventListener('DOMContentLoaded', function () {
 		    // Get the necessary elements
 		    let openMenuButton = document.getElementById('openMenu');
