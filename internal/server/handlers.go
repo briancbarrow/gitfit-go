@@ -5,19 +5,32 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/users"
 	"github.com/stytchauth/stytch-go/v11/stytch/stytcherror"
 )
 
-type templateData struct {
-	Form  any
-	Toast string
+func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	pages.Dashboard(data).Render(r.Context(), w)
+}
+
+func (app *application) loginGet(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	form := &ui.UserLoginForm{}
+	pages.LoginPage(*form, data).Render(r.Context(), w)
+}
+
+func (app *application) registerGet(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	form := &ui.UserRegisterForm{}
+	pages.Register(*form, data).Render(r.Context(), w)
 }
 
 func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Request) {
-	form := &pages.UserRegisterForm{}
+	form := &ui.UserRegisterForm{}
 	err := app.decodePostForm(r, form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
@@ -56,14 +69,13 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 				form.AddNonFieldError(string(stytchErr.ErrorMessage))
 			}
 
-			var data templateData
-			data.Form = form
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		} else {
 			// err is not of type *stytcherror.Error
 			form.AddNonFieldError("Error with registration. Please try again later.")
 		}
-		pages.Register(*form).Render(r.Context(), w)
+		data := app.newTemplateData(r)
+		pages.Register(*form, data).Render(r.Context(), w)
 	}
 	err = app.users.Insert(form.FirstName, form.LastName, form.Email, response.UserID)
 	if err != nil {
@@ -74,7 +86,7 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 }
 
 func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Request) {
-	form := &pages.UserLoginForm{}
+	form := &ui.UserLoginForm{}
 
 	err := app.decodePostForm(r, form)
 	if err != nil {
@@ -87,7 +99,7 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 		SessionDurationMinutes: 60,
 	}
 
-	_, err = app.stytchAPIClient.Passwords.Authenticate(context.Background(), params)
+	stytchResponse, err := app.stytchAPIClient.Passwords.Authenticate(context.Background(), params)
 	if err != nil {
 		fmt.Printf("ERROR IS TYPE: %T", err)
 		if stytchErr, ok := err.(stytcherror.Error); ok {
@@ -95,14 +107,16 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 
 			form.AddNonFieldError(string(stytchErr.ErrorMessage))
 
-			var data templateData
-			data.Form = form
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		} else {
 			form.AddNonFieldError("Error logging in. Please try again later.")
 		}
-		pages.LoginPage(*form).Render(r.Context(), w)
+		data := app.newTemplateData(r)
+		pages.LoginPage(*form, data).Render(r.Context(), w)
 	}
+	app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
+	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
+	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 
 }

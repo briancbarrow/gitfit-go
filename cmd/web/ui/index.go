@@ -1,4 +1,4 @@
-package pages
+package ui
 
 import "github.com/briancbarrow/gitfit-go/internal/validator"
 
@@ -15,4 +15,10 @@ type UserLoginForm struct {
 	Email               string `form:"email"`
 	Password            string `form:"password"`
 	validator.Validator `form:"-"`
+}
+
+type TemplateData struct {
+	Toast           string
+	IsAuthenticated bool
+	Form            any
 }

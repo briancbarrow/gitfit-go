@@ -20,12 +20,17 @@ func (app *application) RegisterRoutes() http.Handler {
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
 	// r.HandlerFunc(http.MethodGet, "/", app.helloWorldHandler)
-	r.Handler(http.MethodGet, "/", dynamic.Then(templ.Handler(pages.Home())))
-	r.Handler(http.MethodGet, "/login", dynamic.Then(templ.Handler(pages.LoginPage(pages.UserLoginForm{}))))
+	r.Handler(http.MethodGet, "/", dynamic.Then(templ.Handler(pages.Home(ui.TemplateData{}))))
+
+	notProtected := dynamic.Append(app.redirectIfAuthenticated)
+	r.Handler(http.MethodGet, "/login", notProtected.ThenFunc(app.loginGet))
+	r.Handler(http.MethodGet, "/register", notProtected.ThenFunc(app.registerGet))
+
 	r.Handler(http.MethodPost, "/login", dynamic.ThenFunc(app.userLoginPostStytch))
-	r.Handler(http.MethodGet, "/register", dynamic.Then(templ.Handler(pages.Register(pages.UserRegisterForm{}))))
 	r.Handler(http.MethodPost, "/register", dynamic.ThenFunc(app.userRegisterPostStytch))
-	r.Handler(http.MethodGet, "/dashboard", dynamic.Then(templ.Handler(pages.Dashboard())))
+
+	protected := dynamic.Append(app.requireAuthentication)
+	r.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboardGet))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, ui.SecureHeaders)
 

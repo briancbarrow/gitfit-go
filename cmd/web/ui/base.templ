@@ -1,6 +1,6 @@
 package ui
 
-templ Base() {
+templ Base(td TemplateData) {
 	<!DOCTYPE html>
 	<html class="h-full bg-white" lang="en">
 		<head>
@@ -12,7 +12,7 @@ templ Base() {
 			<link rel="stylesheet" href="/css/output.css"/>
 		</head>
 		<body class="h-full">
-			@Header()
+			@Header(td)
 			<main>
 				{ children... }
 			</main>
@@ -63,7 +63,7 @@ templ Footer() {
 	</footer>
 }
 
-templ Header() {
+templ Header(td TemplateData) {
 	<header class="bg-white">
 		<nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
 			<div class="flex lg:flex-1">
@@ -86,9 +86,15 @@ templ Header() {
 			// 	<a href="#" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
 			// 	<a href="#" class="text-sm font-semibold leading-6 text-gray-900">Company</a>
 			// </div>
-			<div class="hidden lg:flex lg:flex-1 lg:justify-end">
-				<a href="/login" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
-			</div>
+			if !td.IsAuthenticated {
+				<div class="hidden lg:flex lg:flex-1 lg:justify-end">
+					<a href="/login" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+				</div>
+			} else {
+				<div class="hidden lg:flex lg:flex-1 lg:justify-end">
+					<a href="/logout" class="text-sm font-semibold leading-6 text-gray-900">Log out <span aria-hidden="true">&rarr;</span></a>
+				</div>
+			}
 		</nav>
 		<div class="lg:hidden hidden" role="dialog" aria-modal="true" id="mobileMenu">
 			<!-- Background backdrop, show/hide based on slide-over state. -->
@@ -108,15 +114,21 @@ templ Header() {
 				</div>
 				<div class="mt-6 flow-root">
 					<div class="-my-6 divide-y divide-gray-500/10">
-						<div class="space-y-2 py-6">
-							<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Product</a>
-							<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
-							<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Marketplace</a>
-							<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Company</a>
-						</div>
-						<div class="py-6">
-							<a href="/login" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
-						</div>
+						// <div class="space-y-2 py-6">
+						// 	<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Product</a>
+						// 	<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
+						// 	<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Marketplace</a>
+						// 	<a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Company</a>
+						// </div>
+						if !td.IsAuthenticated {
+							<div class="py-6">
+								<a href="/login" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
+							</div>
+						} else {
+							<div class="py-6">
+								<a href="/logout" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log out</a>
+							</div>
+						}
 					</div>
 				</div>
 			</div>
