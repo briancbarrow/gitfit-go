@@ -1,11 +1,12 @@
 package pages
 
 import (
-	"github.com/briancbarrow/gitfit-go/web/ui"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
 )
 
-templ Dashboard() {
-	@ui.Base() {
+templ Dashboard(templateData ui.TemplateData) {
+	@ui.Base(templateData) {
 		<div class="py-10">
 			<header>
 				<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -18,5 +19,8 @@ templ Dashboard() {
 				</div>
 			</main>
 		</div>
+	}
+	if templateData.Toast != "" {
+		@components.Toast(templateData.Toast)
 	}
 }

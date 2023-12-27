@@ -1,4 +1,4 @@
 tmp/
 *.sqlite3
 .env
-.db
+*.db

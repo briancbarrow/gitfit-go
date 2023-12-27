@@ -37,3 +37,6 @@ clean up binary from the last build
 ```bash
 make clean
 ```
+
+Command to run tailwind watcher
+`./tailwindcss -i ./cmd/web/ui/css/input.css -o ./cmd/web/ui/css/output.css --watch`

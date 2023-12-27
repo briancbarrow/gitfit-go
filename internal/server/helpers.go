@@ -2,20 +2,21 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"runtime/debug"
 
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/go-playground/form/v4"
+	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
 )
 
-// func (app *application) newTemplateData(r *http.Request) templateData {
-// 	return templateData{
-// 		CurrentYear:     time.Now().Year(),
-// 		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
-// 		IsAuthenticated: app.isAuthenticated(r),
-// 		CSRFToken:       nosurf.Token(r),
-// 	}
-// }
+func (app *application) newTemplateData(r *http.Request) ui.TemplateData {
+	return ui.TemplateData{
+		Toast:           app.sessionManager.PopString(r.Context(), "toast"),
+		IsAuthenticated: app.isAuthenticated(r),
+	}
+}
 
 // func (app *application) render(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) {
 // 	ts, ok := app.templateCache[page]
@@ -76,11 +77,19 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 	return nil
 }
 
-// func (app *application) isAuthenticated(r *http.Request) bool {
-// 	isAuthenticated, ok := r.Context().Value(isAuthenticatedContextKey).(bool)
-// 	if !ok {
-// 		return false
-// 	}
-
-// 	return isAuthenticated
-// }
+func (app *application) isAuthenticated(r *http.Request) bool {
+	stytchSessionToken := app.sessionManager.Get(r.Context(), "stytchSessionToken").(string)
+	resp, err := app.stytchAPIClient.Sessions.Authenticate(r.Context(), &sessions.AuthenticateParams{
+		SessionToken: stytchSessionToken,
+	})
+	fmt.Println("status code: ", resp.StatusCode)
+	if err != nil {
+		// TODO: Need to handle if stych is down and throwing errors rather than just returning false
+		return false
+	}
+	if resp.StatusCode >= 200 {
+		return true
+	} else {
+		return false
+	}
+}

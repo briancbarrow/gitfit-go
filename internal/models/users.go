@@ -12,7 +12,8 @@ import (
 
 type User struct {
 	ID             int
-	Name           string
+	FirstName      string
+	LastName       string
 	Email          string
 	HashedPassword []byte
 	Created        time.Time
@@ -22,21 +23,12 @@ type UserModel struct {
 	DB *sql.DB
 }
 
-func (m *UserModel) Insert(name, email, password string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		return err
-	}
+func (m *UserModel) Insert(first_name, last_name, email, stytchId string) error {
+	stmt := `INSERT INTO users (stytch_id, first_name, last_name, email, created)
+	VALUES(?, ?, ?, ?, datetime('now'))`
+	_, err := m.DB.Exec(stmt, stytchId, first_name, last_name, email)
 
-	stmt := `INSERT INTO users (name, email, hashed_password, created)
-	VALUES(?, ?, ?, datetime('now'))`
-	fmt.Println("BEFORE m")
-	fmt.Println("AFTER STMT m", m)
-	fmt.Println("AFTER m.DB", m.DB)
-	_, err = m.DB.Exec(stmt, name, email, string(hashedPassword))
-	fmt.Println("AFTER Exec")
 	if err != nil {
-		fmt.Println("SQL ERR")
 		if sqliteErr, ok := err.(sqlite3.Error); ok {
 			if sqliteErr.Code == sqlite3.ErrConstraint {
 				return ErrDuplicateEmail
