@@ -19,7 +19,6 @@ func (app *application) RegisterRoutes() http.Handler {
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
-	// r.HandlerFunc(http.MethodGet, "/", app.helloWorldHandler)
 	r.Handler(http.MethodGet, "/", dynamic.Then(templ.Handler(pages.Home(ui.TemplateData{}))))
 
 	notProtected := dynamic.Append(app.redirectIfAuthenticated)

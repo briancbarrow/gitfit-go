@@ -76,6 +76,7 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 		}
 		data := app.newTemplateData(r)
 		pages.Register(*form, data).Render(r.Context(), w)
+		return
 	}
 	err = app.users.Insert(form.FirstName, form.LastName, form.Email, response.UserID)
 	if err != nil {
@@ -113,36 +114,10 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 		}
 		data := app.newTemplateData(r)
 		pages.LoginPage(*form, data).Render(r.Context(), w)
+		return
 	}
 	app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
 	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-
 }
-
-// func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
-// 	form := &pages.UserLoginForm{}
-
-// 	err := app.decodePostForm(r, form)
-// 	if err != nil {
-// 		app.clientError(w, http.StatusBadRequest)
-// 	}
-
-// 	form.NotBlankFull(form.Email, "email")
-// 	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
-// 	form.NotBlankFull(form.Password, "password")
-
-// 	_, err = app.users.Authenticate(form.Email, form.Password)
-// 	if err != nil {
-// 		if errors.Is(err, models.ErrInvalidCredentials) {
-// 			form.AddNonFieldError("Email or password do not match")
-// 			var data templateData
-// 			data.Form = form
-// 			w.WriteHeader(http.StatusUnprocessableEntity)
-// 			pages.LoginPage(*form).Render(r.Context(), w)
-// 			return
-// 		}
-// 	}
-// 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-// }

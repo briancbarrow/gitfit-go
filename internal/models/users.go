@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/mattn/go-sqlite3"
@@ -36,7 +35,7 @@ func (m *UserModel) Insert(first_name, last_name, email, stytchId string) error 
 		}
 		return err
 	}
-	fmt.Println("AFTER ALL INSERT")
+
 	return nil
 }
 
