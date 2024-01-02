@@ -21,4 +21,5 @@ type TemplateData struct {
 	Toast           string
 	IsAuthenticated bool
 	Form            any
+	CSRFToken       string
 }

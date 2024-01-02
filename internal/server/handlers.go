@@ -8,6 +8,7 @@ import (
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
+	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/users"
 	"github.com/stytchauth/stytch-go/v11/stytch/stytcherror"
 )
@@ -120,4 +121,22 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
 	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func (app *application) userLogoutPostStytch(w http.ResponseWriter, r *http.Request) {
+	var stytchSessionToken string
+	if _, ok := app.sessionManager.Get(r.Context(), "stytchSessionToken").(string); ok {
+		stytchSessionToken = app.sessionManager.Get(r.Context(), "stytchSessionToken").(string)
+	} else {
+		stytchSessionToken = ""
+	}
+	_, err := app.stytchAPIClient.Sessions.Revoke(r.Context(), &sessions.RevokeParams{
+		SessionToken: stytchSessionToken,
+	})
+	if err != nil {
+		app.serverError(w, r, err)
+		app.sessionManager.Remove(r.Context(), "stytchSessionToken")
+	}
+	app.sessionManager.Put(r.Context(), "toast", "You've been logged out successfully!")
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }

@@ -17,7 +17,7 @@ func (app *application) RegisterRoutes() http.Handler {
 	r.Handler(http.MethodGet, "/css/*filepath", fileServer)
 	r.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
-	dynamic := alice.New(app.sessionManager.LoadAndSave)
+	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf)
 
 	r.Handler(http.MethodGet, "/", dynamic.Then(templ.Handler(pages.Home(ui.TemplateData{}))))
 
@@ -27,6 +27,7 @@ func (app *application) RegisterRoutes() http.Handler {
 
 	r.Handler(http.MethodPost, "/login", dynamic.ThenFunc(app.userLoginPostStytch))
 	r.Handler(http.MethodPost, "/register", dynamic.ThenFunc(app.userRegisterPostStytch))
+	r.Handler(http.MethodPost, "/logout", dynamic.ThenFunc(app.userLogoutPostStytch))
 
 	protected := dynamic.Append(app.requireAuthentication)
 	r.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboardGet))

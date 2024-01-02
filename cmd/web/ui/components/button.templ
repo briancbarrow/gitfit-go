@@ -1,0 +1,29 @@
+package components
+
+var ButtonVariants map[string]string = map[string]string{
+	"primary":   "bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600",
+	"secondary": "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600",
+}
+
+type ButtonAttrs struct {
+	Variant string
+	Text    string
+	Type    string
+}
+
+func getVariantValue(variant string) string {
+	if variant == "" {
+		return ButtonVariants["primary"]
+	}
+	return ButtonVariants[variant]
+}
+
+templ Button(attrs ButtonAttrs) {
+	<button
+ 		if attrs.Type == "" {
+			type="button"
+		}
+ 		type={ attrs.Type }
+ 		class={ getVariantValue(attrs.Variant), templ.SafeClass("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2") }
+	>{ attrs.Text }</button>
+}
