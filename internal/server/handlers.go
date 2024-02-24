@@ -79,10 +79,10 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 		pages.Register(*form, data).Render(r.Context(), w)
 		return
 	}
-	err = app.users.Insert(form.FirstName, form.LastName, form.Email, response.UserID)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+	// err = app.users.Insert(form.FirstName, form.LastName, form.Email, response.UserID)
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// }
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }
@@ -105,7 +105,6 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		fmt.Printf("ERROR IS TYPE: %T", err)
 		if stytchErr, ok := err.(stytcherror.Error); ok {
-			// Now stytchErr is of type *stytcherror.Error and you can access its fields
 
 			form.AddNonFieldError(string(stytchErr.ErrorMessage))
 
