@@ -32,7 +32,7 @@ func (app *application) RegisterRoutes() http.Handler {
 	protected := dynamic.Append(app.requireAuthentication)
 	r.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboardGet))
 
-	standard := alice.New(app.recoverPanic, app.logRequest, ui.SecureHeaders)
+	standard := alice.New(app.recoverPanic, ui.SecureHeaders)
 
 	return standard.Then(r)
 }

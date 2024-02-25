@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"embed"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -16,7 +18,18 @@ import (
 var embedMigrations embed.FS
 
 func main() {
-	err := godotenv.Load()
+	isProd := flag.Bool("isProd", false, "Determines if the server is in production mode")
+	direction := flag.String("direction", "up", "Run up migrations")
+	flag.Parse()
+	fmt.Println("Starting migrations", *direction)
+	var filepath string
+	if *isProd {
+		filepath = ".env"
+	} else {
+		filepath = ".env.local"
+	}
+	fmt.Println("Loading .env file", filepath)
+	err := godotenv.Load(filepath)
 	if err != nil {
 		log.Fatal("failed to load env")
 	}
@@ -34,7 +47,13 @@ func main() {
 	if err := goose.SetDialect("sqlite"); err != nil {
 		log.Fatal(err)
 	}
-	if err := goose.Up(db, "."); err != nil {
-		log.Fatal(err)
+	if *direction == "down" {
+		if err := goose.Down(db, "."); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if err := goose.Up(db, "."); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
