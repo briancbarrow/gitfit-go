@@ -7,6 +7,11 @@ import (
 
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
+
+	database "github.com/briancbarrow/gitfit-go/internal/database/db"
+	"github.com/briancbarrow/gitfit-go/internal/database/dbErrors"
+	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
+	"github.com/mattn/go-sqlite3"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/users"
@@ -79,10 +84,45 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 		pages.Register(*form, data).Render(r.Context(), w)
 		return
 	}
-	// err = app.users.Insert(form.FirstName, form.LastName, form.Email, response.UserID)
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// }
+
+	// generate random database id
+	newDBID := tenancy.GenerateRandomDBString()
+	// err = app.users.Insert(response.UserID, newDBID)
+	createUserParams := database.CreateUserParams{
+		StytchID:   response.UserID,
+		DatabaseID: newDBID,
+	}
+
+	// push user to users table
+	_, err = app.queries.CreateUser(r.Context(), createUserParams)
+	if err != nil {
+		if sqliteErr, ok := err.(sqlite3.Error); ok {
+			if sqliteErr.Code == sqlite3.ErrConstraint {
+				app.serverError(w, r, dbErrors.ErrDuplicateEmail)
+			}
+		}
+		app.serverError(w, r, err)
+	}
+
+	// check if user's tenant db exists
+	exists, err := tenancy.CheckIfTenantDBExists(newDBID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+	if !exists {
+		dbCreated, err := tenancy.CreateTenantDB(newDBID)
+		if err != nil {
+			app.serverError(w, r, err)
+		}
+		if !dbCreated {
+			app.serverError(w, r, fmt.Errorf("error creating tenant db"))
+		}
+	}
+	err = tenancy.SeedTenantDB(newDBID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }
@@ -103,11 +143,8 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 
 	stytchResponse, err := app.stytchAPIClient.Passwords.Authenticate(context.Background(), params)
 	if err != nil {
-		fmt.Printf("ERROR IS TYPE: %T", err)
 		if stytchErr, ok := err.(stytcherror.Error); ok {
-
 			form.AddNonFieldError(string(stytchErr.ErrorMessage))
-
 			w.WriteHeader(http.StatusUnprocessableEntity)
 		} else {
 			form.AddNonFieldError("Error logging in. Please try again later.")
@@ -119,6 +156,7 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 	app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
 	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
+
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
