@@ -118,6 +118,11 @@ func (app *application) userRegisterPostStytch(w http.ResponseWriter, r *http.Re
 			app.serverError(w, r, fmt.Errorf("error creating tenant db"))
 		}
 	}
+	err = tenancy.SeedTenantDB(newDBID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }

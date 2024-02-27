@@ -38,7 +38,7 @@ func CreateTenantDB(databaseID string) (bool, error) {
 		slog.Error("Error creating request", "err", err)
 		return false, err
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TURSO_TOKEN")))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TURSO_API_TOKEN")))
 	fmt.Println("Request", req)
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -49,7 +49,6 @@ func CreateTenantDB(databaseID string) (bool, error) {
 	}
 	fmt.Println("Response", resp)
 	if resp.StatusCode == 200 {
-		fmt.Println("Tenant DB created successfully")
 		slog.Info("Tenant DB created successfully")
 		return true, nil
 	}
@@ -64,7 +63,7 @@ func CheckIfTenantDBExists(databaseID string) (bool, error) {
 		slog.Error("Error creating request", "err", err)
 		return false, err
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TURSO_TOKEN")))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TURSO_API_TOKEN")))
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -76,4 +75,18 @@ func CheckIfTenantDBExists(databaseID string) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func SeedTenantDB(databaseID string) error {
+	dbUrl := fmt.Sprintf("libsql://%s-briancbarrow.turso.io?authToken=%s", databaseID, os.Getenv("TURSO_DB_TOKEN"))
+	fmt.Println("Running migrations on", dbUrl)
+	err := CreateTenantTables(dbUrl)
+	if err != nil {
+		return err
+	}
+	err = InsertDataFromCSV(dbUrl)
+	if err != nil {
+		return err
+	}
+	return nil
 }
