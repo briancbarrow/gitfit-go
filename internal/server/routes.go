@@ -16,6 +16,7 @@ func (app *application) RegisterRoutes() http.Handler {
 	fileServer := http.FileServer(http.FS(ui.Files))
 	r.Handler(http.MethodGet, "/css/*filepath", fileServer)
 	r.Handler(http.MethodGet, "/static/*filepath", fileServer)
+	r.Handler(http.MethodGet, "/js/*filepath", fileServer)
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf)
 

@@ -25,5 +25,6 @@ templ Button(attrs ButtonAttrs) {
 		}
  		type={ attrs.Type }
  		class={ getVariantValue(attrs.Variant), templ.SafeClass("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2") }
-	>{ attrs.Text }</button>
+	>{ attrs.Text }{ children... }
+</button>
 }

@@ -28,7 +28,7 @@ func SecureHeaders(next http.Handler) http.Handler {
 			fmt.Println("error generating nonce")
 		}
 		ctx := context.WithValue(r.Context(), NonceValue, nonceString)
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'nonce-"+nonceString+"'")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self' 'nonce-"+nonceString+"'")
 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "deny")
