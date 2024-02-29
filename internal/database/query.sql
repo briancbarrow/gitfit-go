@@ -12,7 +12,9 @@ INSERT INTO users (stytch_id, database_id, created)
 RETURNING *;
 
 -- name: UserExists :one
-SELECT EXISTS(SELECT true FROM users WHERE stytch_id = ?)
+SELECT EXISTS(SELECT true FROM users WHERE stytch_id = ?);
+
+
 
 -- -- name: UpdateAuthor :exec
 -- UPDATE authors

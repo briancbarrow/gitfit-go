@@ -13,9 +13,17 @@ import "bytes"
 import (
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
+	"github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 )
 
-func Dashboard(templateData ui.TemplateData) templ.Component {
+type DashboardOptions struct {
+	TemplateData   ui.TemplateData
+	ExerciseList   []tenant_database.Exercise
+	WorkoutSetList []tenant_database.ListWorkoutSetsRow
+}
+
+func Dashboard(options DashboardOptions) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -34,7 +42,7 @@ func Dashboard(templateData ui.TemplateData) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"py-10\"><header><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8\"><h1 class=\"text-3xl font-bold leading-tight tracking-tight text-gray-900\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"py-4\"><header class=\"mb-6\"><div class=\"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8\"><h1 class=\"text-3xl font-bold leading-tight tracking-tight text-gray-900\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -43,16 +51,77 @@ func Dashboard(templateData ui.TemplateData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1></div></header><main><div class=\"mx-auto max-w-7xl sm:px-6 lg:px-8\"><!--")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1></div></header><main class=\"pb-8\"><div class=\"mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8\"><h1 class=\"sr-only\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var4 := ` Your content `
+			templ_7745c5c3_Var4 := `Page title`
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--></div></main></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><!--")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var5 := ` Main 3 column grid `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8\"><!--")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var6 := ` Left column `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 gap-4 lg:col-span-2\"><section aria-labelledby=\"section-1-title\"><h2 class=\"sr-only\" id=\"section-1-title\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var7 := `Section title`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = dashboard_components.ExerciseTable(options.WorkoutSetList).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div><!--")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var8 := ` Right column `
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 gap-4\"><section aria-labelledby=\"section-2-title\"><h2 class=\"sr-only\" id=\"section-2-title\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var9 := `Section title`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = dashboard_components.ExerciseForm(options.ExerciseList).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div></div></div></main></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -61,12 +130,12 @@ func Dashboard(templateData ui.TemplateData) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = ui.Base(templateData).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.Base(options.TemplateData).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if templateData.Toast != "" {
-			templ_7745c5c3_Err = components.Toast(templateData.Toast).Render(ctx, templ_7745c5c3_Buffer)
+		if options.TemplateData.Toast != "" {
+			templ_7745c5c3_Err = components.Toast(options.TemplateData.Toast).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

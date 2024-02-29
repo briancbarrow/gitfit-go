@@ -2,6 +2,7 @@ package tenancy
 
 import (
 	"bytes"
+	"database/sql"
 	"fmt"
 	"log/slog"
 	"math/rand"
@@ -89,4 +90,20 @@ func SeedTenantDB(databaseID string) error {
 		return err
 	}
 	return nil
+}
+
+func OpenTenantDB(databaseID string) (*sql.DB, error) {
+	authToken := os.Getenv("TURSO_DB_TOKEN")
+	dbUrl := fmt.Sprintf("libsql://%s-briancbarrow.turso.io?authToken=%s", databaseID, authToken)
+	db, err := sql.Open("libsql", dbUrl)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", dbUrl, err)
+		os.Exit(1)
+	}
+
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

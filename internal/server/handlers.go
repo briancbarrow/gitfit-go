@@ -11,6 +11,7 @@ import (
 	database "github.com/briancbarrow/gitfit-go/internal/database/db"
 	"github.com/briancbarrow/gitfit-go/internal/database/dbErrors"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
+	tenant_database "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 	"github.com/mattn/go-sqlite3"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
@@ -19,8 +20,66 @@ import (
 )
 
 func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
-	data := app.newTemplateData(r)
-	pages.Dashboard(data).Render(r.Context(), w)
+	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
+	user, err := app.queries.GetUser(r.Context(), userID.(string))
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+	dbID := user.DatabaseID
+
+	dashboardOptions := pages.DashboardOptions{}
+
+	dashboardOptions.TemplateData = app.newTemplateData(r)
+	db, err := tenancy.OpenTenantDB(dbID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	tenantQueries := tenant_database.New(db)
+	// exerciseList, err := tenantQueries.ListExercises(r.Context())
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// }
+	// dashboardOptions.ExerciseList = exerciseList
+
+	// workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context())
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// }
+	// dashboardOptions.WorkoutSetList = workoutSetList
+
+	// pages.Dashboard(dashboardOptions).Render(r.Context(), w)
+	exerciseListChan := make(chan []tenant_database.Exercise, 1)
+	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
+	errChan := make(chan error, 2)
+
+	go func() {
+		exerciseList, err := tenantQueries.ListExercises(r.Context())
+		if err != nil {
+			errChan <- err
+			return
+		}
+		exerciseListChan <- exerciseList
+	}()
+
+	go func() {
+		workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context())
+		if err != nil {
+			errChan <- err
+			return
+		}
+		workoutSetListChan <- workoutSetList
+	}()
+
+	dashboardOptions.ExerciseList = <-exerciseListChan
+	dashboardOptions.WorkoutSetList = <-workoutSetListChan
+
+	select {
+	case err := <-errChan:
+		app.serverError(w, r, err)
+	default:
+		pages.Dashboard(dashboardOptions).Render(r.Context(), w)
+	}
 }
 
 func (app *application) loginGet(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +212,7 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 		pages.LoginPage(*form, data).Render(r.Context(), w)
 		return
 	}
-	app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
+	// app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
 	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
 
