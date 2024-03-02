@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"embed"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -21,14 +20,13 @@ func main() {
 	isProd := flag.Bool("isProd", false, "Determines if the server is in production mode")
 	direction := flag.String("direction", "up", "Run up migrations")
 	flag.Parse()
-	fmt.Println("Starting migrations", *direction)
 	var filepath string
 	if *isProd {
 		filepath = ".env"
 	} else {
 		filepath = ".env.local"
 	}
-	fmt.Println("Loading .env file", filepath)
+
 	err := godotenv.Load(filepath)
 	if err != nil {
 		log.Fatal("failed to load env")

@@ -14,16 +14,9 @@ import (
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
-	"github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 )
 
-type DashboardOptions struct {
-	TemplateData   ui.TemplateData
-	ExerciseList   []tenant_database.Exercise
-	WorkoutSetList []tenant_database.ListWorkoutSetsRow
-}
-
-func Dashboard(options DashboardOptions) templ.Component {
+func Dashboard(options dashboard_components.TableAndFormOptions) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -69,59 +62,15 @@ func Dashboard(options DashboardOptions) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8\"><!--")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("-->")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var6 := ` Left column `
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+			templ_7745c5c3_Err = dashboard_components.TableAndForm(options).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 gap-4 lg:col-span-2\"><section aria-labelledby=\"section-1-title\"><h2 class=\"sr-only\" id=\"section-1-title\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Var7 := `Section title`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = dashboard_components.ExerciseTable(options.WorkoutSetList).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div><!--")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Var8 := ` Right column `
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><div class=\"grid grid-cols-1 gap-4\"><section aria-labelledby=\"section-2-title\"><h2 class=\"sr-only\" id=\"section-2-title\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Var9 := `Section title`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = dashboard_components.ExerciseForm(options.ExerciseList).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div></div></div></main></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></main></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

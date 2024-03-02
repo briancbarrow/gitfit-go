@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
+	dashboard_components "github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 
 	database "github.com/briancbarrow/gitfit-go/internal/database/db"
@@ -27,28 +28,16 @@ func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
 	}
 	dbID := user.DatabaseID
 
-	dashboardOptions := pages.DashboardOptions{}
+	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
 
-	dashboardOptions.TemplateData = app.newTemplateData(r)
+	tableAndFormOptions.TemplateData = app.newTemplateData(r)
 	db, err := tenancy.OpenTenantDB(dbID)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
 
 	tenantQueries := tenant_database.New(db)
-	// exerciseList, err := tenantQueries.ListExercises(r.Context())
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// }
-	// dashboardOptions.ExerciseList = exerciseList
 
-	// workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context())
-	// if err != nil {
-	// 	app.serverError(w, r, err)
-	// }
-	// dashboardOptions.WorkoutSetList = workoutSetList
-
-	// pages.Dashboard(dashboardOptions).Render(r.Context(), w)
 	exerciseListChan := make(chan []tenant_database.Exercise, 1)
 	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
 	errChan := make(chan error, 2)
@@ -71,14 +60,14 @@ func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
 		workoutSetListChan <- workoutSetList
 	}()
 
-	dashboardOptions.ExerciseList = <-exerciseListChan
-	dashboardOptions.WorkoutSetList = <-workoutSetListChan
+	tableAndFormOptions.ExerciseList = <-exerciseListChan
+	tableAndFormOptions.WorkoutSetList = <-workoutSetListChan
 
 	select {
 	case err := <-errChan:
 		app.serverError(w, r, err)
 	default:
-		pages.Dashboard(dashboardOptions).Render(r.Context(), w)
+		pages.Dashboard(tableAndFormOptions).Render(r.Context(), w)
 	}
 }
 

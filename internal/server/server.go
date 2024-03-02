@@ -34,22 +34,13 @@ type application struct {
 
 func openDB() (*sql.DB, error) {
 	var dbUrl = os.Getenv("MAIN_SQL_URL")
-	fmt.Println("DB URL", dbUrl)
 	db, err := sql.Open("libsql", dbUrl)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", dbUrl, err)
 		os.Exit(1)
 	}
-	var token = "from Go token"
-	var b = "from Go B data"
-	var expiry = time.Time{}
-	// TODO: Need to move this into queries
-	_, err = db.Exec("REPLACE INTO sessions (token, data, expiry) VALUES (?, ?, julianday(?))", token, b, expiry.UTC().Format("2006-01-02T15:04:05.999"))
 
-	if err != nil {
-		fmt.Println("GOT TO ERROR", err)
-	}
-
+	// create connection to check for errors
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
@@ -64,14 +55,14 @@ func NewServer(isProd bool) *http.Server {
 	} else {
 		filepath = ".env.local"
 	}
-	fmt.Println("Loading .env file", filepath)
+
 	err := godotenv.Load(filepath)
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	// dsn := flag.String("dsn", "local.db", "SQLite DB name")
 
+	// TODO: Look into if there is a better way to do prettylog
 	logger := slog.New(prettylog.NewHandler(&slog.HandlerOptions{
 		AddSource: true,
 	}))

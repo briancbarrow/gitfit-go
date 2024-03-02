@@ -15,7 +15,6 @@ require (
 	github.com/pressly/goose/v3 v3.17.0
 	github.com/stytchauth/stytch-go/v11 v11.5.2
 	github.com/tursodatabase/libsql-client-go v0.0.0-20231216154754-8383a53d618f
-	golang.org/x/crypto v0.16.0
 )
 
 require (

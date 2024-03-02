@@ -24,31 +24,24 @@ func GenerateRandomDBString() string {
 }
 
 func CreateTenantDB(databaseID string) (bool, error) {
-	fmt.Println("Creating tenant DB", databaseID)
 	body := []byte(fmt.Sprintf(`{
 		"name":  "%s",
 		"group": "default"
 		}`, databaseID))
 
 	org := os.Getenv("TURSO_ORG")
-	fmt.Println("Org", org)
-	fmt.Println("BODY", string(body))
 	req, err := http.NewRequest("POST", fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases", org), bytes.NewBuffer(body))
 	if err != nil {
-		fmt.Println("Error creating request", err)
 		slog.Error("Error creating request", "err", err)
 		return false, err
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TURSO_API_TOKEN")))
-	fmt.Println("Request", req)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error sending request", err)
 		slog.Error("Error sending request", "err", err)
 		return false, err
 	}
-	fmt.Println("Response", resp)
 	if resp.StatusCode == 200 {
 		slog.Info("Tenant DB created successfully")
 		return true, nil
@@ -60,7 +53,6 @@ func CheckIfTenantDBExists(databaseID string) (bool, error) {
 	org := os.Getenv("TURSO_ORG")
 	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases/%s", org, databaseID), nil)
 	if err != nil {
-		fmt.Println("Error creating request", err)
 		slog.Error("Error creating request", "err", err)
 		return false, err
 	}
@@ -68,7 +60,6 @@ func CheckIfTenantDBExists(databaseID string) (bool, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error sending request", err)
 		slog.Error("Error sending request", "err", err)
 		return false, err
 	}
