@@ -31,9 +31,12 @@ func (app *application) RegisterRoutes() http.Handler {
 	r.Handler(http.MethodPost, "/logout", dynamic.ThenFunc(app.userLogoutPostStytch))
 
 	protected := dynamic.Append(app.requireAuthentication)
+	r.Handler(http.MethodGet, "/workout-sets", protected.ThenFunc(app.GetWorkoutSetTable))
+	r.Handler(http.MethodPost, "/new-set", protected.ThenFunc(app.HandleNewSet))
+	r.Handler(http.MethodDelete, "/delete-set/:id", protected.ThenFunc(app.HandleDeleteSet))
 	r.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboardGet))
 
-	standard := alice.New(app.recoverPanic, ui.SecureHeaders)
+	standard := alice.New(app.recoverPanic, app.logRequest, ui.SecureHeaders)
 
 	return standard.Then(r)
 }

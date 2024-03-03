@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/justinas/nosurf"
 )
@@ -42,7 +43,6 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 		}
 
 		w.Header().Add("Cache-Control", "no-store")
-
 		next.ServeHTTP(w, r)
 	})
 }
@@ -63,6 +63,9 @@ func noSurf(next http.Handler) http.Handler {
 		HttpOnly: true,
 		Path:     "/",
 		Secure:   true,
+	})
+	csrfHandler.ExemptFunc(func(r *http.Request) bool {
+		return strings.HasPrefix(r.URL.Path, "/delete-set/")
 	})
 	return csrfHandler
 }

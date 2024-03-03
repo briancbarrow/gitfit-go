@@ -1,0 +1,122 @@
+package dashboard_components
+
+import "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
+import "strconv"
+import "time"
+import "github.com/briancbarrow/gitfit-go/cmd/web"
+
+templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue web.NonceKey, csrfToken string, date string) {
+	<input
+ 		id="table-date"
+ 		type="date"
+ 		name="date"
+ 		if date == "" {
+			value={ time.Now().Format("2006-01-02") }
+		} else {
+			value={ date }
+		}
+ 		hx-get="/workout-sets"
+ 		hx-target="#table-and-form"
+ 		hx-trigger="change"
+ 		hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
+ 		id="date"
+ 		autocomplete="given-name"
+ 		class="p-2 max-w-80 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+ 		required
+	/>
+	<table id="set-table" class="min-w-full divide-y divide-gray-300">
+		<thead>
+			<tr>
+				<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Date</th>
+				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Exercise</th>
+				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reps</th>
+				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Notes</th>
+				<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
+			</tr>
+		</thead>
+		<tbody class="bg-white">
+			for _, wset := range WorkoutSet {
+				<tr class="even:bg-gray-50">
+					<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">{ wset.Date }</td>
+					<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ wset.ExerciseName }</td>
+					<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ strconv.Itoa(int(wset.Reps)) }</td>
+					<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ wset.Note.String }</td>
+					<td class="actions whitespace-nowrap px-3 py-4 text-sm text-red-300 hover:text-red-800">
+						<div
+ 							class="relative inline-block text-left"
+ 							x-data="{
+            open: false,
+            toggle() {
+                if (this.open) {
+                    return this.close()
+                }
+ 
+                this.$refs.button.focus()
+ 
+                this.open = true
+            },
+            close(focusAfter) {
+                if (! this.open) return
+ 
+                this.open = false
+ 
+                focusAfter && focusAfter.focus()
+            }
+        }"
+ 							x-on:keydown.escape.prevent.stop="close($refs.button)"
+ 							x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+ 							x-id="['dropdown-button']"
+						>
+							<div>
+								<button
+ 									type="button"
+ 									class="actions inline-flex w-full justify-center gap-x-1.5 bg-white text-sm font-semibold text-gray-900 ring-gray-300 hover:bg-gray-50"
+ 									id="menu-button"
+ 									aria-expanded="true"
+ 									aria-haspopup="true"
+ 									x-ref="button"
+ 									x-on:click="toggle()"
+ 									:aria-expanded="open"
+ 									:aria-controls="$id('dropdown-button')"
+ 									type="button"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512" class="h-4 w-4">
+										<path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"></path>
+									</svg>
+								</button>
+							</div>
+							<div
+ 								class="absolute hidden right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+ 								:class="{ 'hidden': !open }"
+ 								role="menu"
+ 								aria-orientation="vertical"
+ 								aria-labelledby="menu-button"
+ 								tabindex="-1"
+ 								x-ref="panel"
+ 								x-show="open"
+ 								x-transition.origin.top.left
+ 								x-on:click.outside="close($refs.button)"
+ 								:id="$id('dropdown-button')"
+							>
+								<div class="py-1" role="none">
+									<button
+ 										type="button"
+ 										class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+ 										role="menuitem"
+ 										tabindex="-1"
+ 										id="menu-item-0"
+ 										hx-delete={ "/delete-set/" + strconv.Itoa(int(wset.ID)) }
+ 										hx-target="#table-and-form"
+ 										hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
+ 										hx-indicator=".actions"
+ 										hx-include="#table-date"
+									>Delete</button>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}

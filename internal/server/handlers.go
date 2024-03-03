@@ -18,11 +18,6 @@ import (
 	"github.com/stytchauth/stytch-go/v11/stytch/stytcherror"
 )
 
-func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
-	data := app.newTemplateData(r)
-	pages.Dashboard(data).Render(r.Context(), w)
-}
-
 func (app *application) loginGet(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	form := &ui.UserLoginForm{}
@@ -153,7 +148,7 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 		pages.LoginPage(*form, data).Render(r.Context(), w)
 		return
 	}
-	app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
+	// app.sessionManager.Put(r.Context(), "toast", "LOGGED IN Success")
 	app.sessionManager.Put(r.Context(), "authenticatedUserID", stytchResponse.UserID)
 	app.sessionManager.Put(r.Context(), "stytchSessionToken", stytchResponse.SessionToken)
 

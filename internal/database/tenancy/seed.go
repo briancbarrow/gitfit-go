@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"embed"
 	"encoding/csv"
-	"fmt"
 	"log"
 	"strconv"
 
@@ -48,8 +47,6 @@ func InsertDataFromCSV(dbUrl string) error {
 	}
 
 	for _, record := range records {
-		fmt.Println("ID", record[0])
-		fmt.Println("RECORD", record)
 		id, err := strconv.Atoi(record[0])
 		if err != nil {
 			return err

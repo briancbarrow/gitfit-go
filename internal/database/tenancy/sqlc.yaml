@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "query.sql"
+    schema: "20240225212611_create_tenant_tables.sql"
+    gen:
+      go:
+        package: "tenant_database"
+        out: "db"
