@@ -11,6 +11,7 @@ type TableAndFormOptions struct {
 	ExerciseList   []tenant_database.Exercise
 	WorkoutSetList []tenant_database.ListWorkoutSetsRow
 	Date           string
+	ChartData      ChartData
 }
 
 templ TableAndForm(options TableAndFormOptions) {
@@ -45,4 +46,21 @@ templ TableAndForm(options TableAndFormOptions) {
 			</section>
 		</div>
 	</div>
+	@Chart(options.ChartData)
+	<script nonce={ templ.EscapeString(ctx.Value(web.NonceValue).(string)) }>
+    document.querySelectorAll('.day-square').forEach((square) => {
+      square.addEventListener('mouseover', (e) => {
+        const tooltip = e.target.querySelector('.tooltip')
+        if (tooltip) {
+          tooltip.classList.remove('hidden')
+        }
+      })
+      square.addEventListener('mouseout', (e) => {
+        const tooltip = e.target.querySelector('.tooltip')
+        if (tooltip) {
+          tooltip.classList.add('hidden')
+        }
+      })
+    })
+  </script>
 }

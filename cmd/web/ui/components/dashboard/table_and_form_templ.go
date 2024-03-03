@@ -21,6 +21,7 @@ type TableAndFormOptions struct {
 	ExerciseList   []tenant_database.Exercise
 	WorkoutSetList []tenant_database.ListWorkoutSetsRow
 	Date           string
+	ChartData      ChartData
 }
 
 func TableAndForm(options TableAndFormOptions) templ.Component {
@@ -89,6 +90,46 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Chart(options.ChartData).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script nonce=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.EscapeString(ctx.Value(web.NonceValue).(string))))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var6 := `
+    document.querySelectorAll('.day-square').forEach((square) => {
+      square.addEventListener('mouseover', (e) => {
+        const tooltip = e.target.querySelector('.tooltip')
+        if (tooltip) {
+          tooltip.classList.remove('hidden')
+        }
+      })
+      square.addEventListener('mouseout', (e) => {
+        const tooltip = e.target.querySelector('.tooltip')
+        if (tooltip) {
+          tooltip.classList.add('hidden')
+        }
+      })
+    })
+  `
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

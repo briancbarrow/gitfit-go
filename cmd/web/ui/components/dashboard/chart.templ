@@ -1,0 +1,45 @@
+package dashboard_components
+
+import "time"
+import "strconv"
+
+type ChartData struct {
+	FirstWeekday time.Weekday
+	DayData      [][]time.Time
+}
+
+var firstDayFound = false
+
+func updateFirstDayFound() string {
+	firstDayFound = true
+	return ""
+}
+
+templ Chart(chartData ChartData) {
+	<div>
+		<h1>Chart</h1>
+		<table class="w-full">
+			for _, weekDay := range chartData.DayData {
+				<tr class="m-4">
+					// <td class="">{ weekDay[0].Weekday().String()[:3] }</td>
+					for dayIdx, day := range weekDay {
+						if dayIdx == 0 {
+							if day.Weekday() != chartData.FirstWeekday && !firstDayFound {
+								<td
+ 									class="day-square h-4 border-4 border-white bg-white-200"
+								></td>
+							} else {
+								<span class="hidden found">{ updateFirstDayFound() }</span>
+							}
+						}
+						<td
+ 							class="day-square h-4 border-4 border-white bg-gray-200"
+						>
+							<span class="hidden tooltip absolute">{ day.Format("2006-01-02") }</span>
+						</td>
+					}
+				</tr>
+			}
+		</table>
+	</div>
+}

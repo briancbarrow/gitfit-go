@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -43,6 +44,9 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 	exerciseListChan := make(chan []tenant_database.Exercise, 1)
 	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
 	errChan := make(chan error, 2)
+
+	chartData := app.BuildChart()
+	tableAndFormOptions.ChartData = chartData
 
 	go func() {
 		exerciseList, err := tenantQueries.ListExercises(r.Context())
@@ -182,4 +186,29 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 	}
 
 	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
+}
+
+func (app *application) BuildChart() dashboard_components.ChartData {
+	firstDayOfYear := time.Date(time.Now().Year(), 1, 1, 0, 0, 0, 0, time.UTC)
+	weekDay := firstDayOfYear.Weekday()
+	days := make([][]time.Time, 7)
+
+	// Iterate over each day of the year
+	currentDay := firstDayOfYear
+	for currentDay.Year() == 2024 {
+		// Calculate the day of the week and add the day to the corresponding list
+		days[int(currentDay.Weekday())] = append(days[int(currentDay.Weekday())], currentDay)
+
+		// Move to the next day
+		currentDay = currentDay.AddDate(0, 0, 1)
+	}
+	fmt.Println("is length 7?", len(days))
+	for i := 0; i < len(days); i++ {
+		fmt.Println(len(days[i]))
+	}
+	chartInfo := dashboard_components.ChartData{
+		FirstWeekday: weekDay,
+		DayData:      days,
+	}
+	return chartInfo
 }
