@@ -8,6 +8,9 @@ INSERT INTO workout_sets (date, exercise, reps, note)
   VALUES(?, ?, ?, ?)
 RETURNING *;
 
+-- name: DeleteWorkoutSet :exec
+DELETE from workout_sets WHERE id = ?;
+
 -- name: ListExercises :many
 SELECT * FROM exercises;
 

@@ -12,6 +12,7 @@ import "bytes"
 
 import "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 import "strconv"
+import "time"
 
 func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -35,7 +36,15 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label><div class=\"mt-2\"><input type=\"date\" name=\"date\" value=\"2024-02-28\" id=\"date\" autocomplete=\"given-name\" class=\"p-2 max-w-80 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6\" required></div></div><div class=\"sm:col-span-6\"><label for=\"exercise\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label><div class=\"mt-2\"><input type=\"date\" name=\"date\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(time.Now().Format("2006-01-02")))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"date\" autocomplete=\"given-name\" class=\"p-2 max-w-80 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6\" required></div></div><div class=\"sm:col-span-6\"><label for=\"exercise\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

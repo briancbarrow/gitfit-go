@@ -6,11 +6,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+
+	"github.com/briancbarrow/gitfit-go/cmd/web"
 )
-
-type nonceKey string
-
-const NonceValue = nonceKey("nonce")
 
 func generateNonce() (string, error) {
 	nonce := make([]byte, 16)
@@ -27,8 +25,8 @@ func SecureHeaders(next http.Handler) http.Handler {
 		if err != nil {
 			fmt.Println("error generating nonce")
 		}
-		ctx := context.WithValue(r.Context(), NonceValue, nonceString)
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self' 'nonce-"+nonceString+"'")
+		ctx := context.WithValue(r.Context(), web.NonceValue, nonceString)
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self' 'unsafe-eval' 'nonce-"+nonceString+"'")
 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "deny")

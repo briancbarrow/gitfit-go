@@ -11,6 +11,7 @@ import "io"
 import "bytes"
 
 import (
+	"github.com/briancbarrow/gitfit-go/cmd/web"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 )
@@ -56,7 +57,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ExerciseTable(options.WorkoutSetList).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

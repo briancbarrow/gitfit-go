@@ -22,4 +22,5 @@ type TemplateData struct {
 	IsAuthenticated bool
 	Form            any
 	CSRFToken       string
+	NonceValue      string
 }

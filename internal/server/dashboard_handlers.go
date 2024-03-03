@@ -8,6 +8,7 @@ import (
 	dashboard_components "github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
 	tenant_database "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
+	"github.com/julienschmidt/httprouter"
 )
 
 func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +56,41 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 		Date:     r.Form.Get("date"),
 		Note:     noteNullString,
 	})
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	app.dashboardGet(w, r)
+}
+
+func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) {
+	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
+
+	user, err := app.queries.GetUser(r.Context(), userID.(string))
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+	dbID := user.DatabaseID
+
+	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
+
+	tableAndFormOptions.TemplateData = app.newTemplateData(r)
+	db, err := tenancy.OpenTenantDB(dbID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	tenantQueries := tenant_database.New(db)
+	params := httprouter.ParamsFromContext(r.Context())
+
+	setId := params.ByName("id")
+	setIdInt, err := strconv.ParseInt(setId, 10, 64)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	// delete set
+	err = tenantQueries.DeleteWorkoutSet(r.Context(), setIdInt)
 	if err != nil {
 		app.serverError(w, r, err)
 	}

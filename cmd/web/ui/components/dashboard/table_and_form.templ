@@ -3,6 +3,7 @@ package dashboard_components
 import (
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
+	"github.com/briancbarrow/gitfit-go/cmd/web"
 )
 
 type TableAndFormOptions struct {
@@ -20,7 +21,7 @@ templ TableAndForm(options TableAndFormOptions) {
 				<div class="overflow-hidden rounded-lg bg-white shadow">
 					<div class="p-6">
 						<div class="relative rounded border border-dashed border-gray-400">
-							@ExerciseTable(options.WorkoutSetList)
+							@WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken)
 						</div>
 					</div>
 				</div>
