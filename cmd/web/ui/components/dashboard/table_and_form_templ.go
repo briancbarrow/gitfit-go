@@ -20,6 +20,7 @@ type TableAndFormOptions struct {
 	TemplateData   ui.TemplateData
 	ExerciseList   []tenant_database.Exercise
 	WorkoutSetList []tenant_database.ListWorkoutSetsRow
+	Date           string
 }
 
 func TableAndForm(options TableAndFormOptions) templ.Component {
@@ -57,7 +58,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken, options.Date).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

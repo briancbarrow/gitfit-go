@@ -89,7 +89,7 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label><div class=\"mt-2\"><input id=\"reps\" value=\"6\" type=\"number\" name=\"reps\" id=\"reps\" autocomplete=\"family-name\" class=\"p-2 block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6\" required></div></div><div class=\"col-span-full\"><label for=\"notes\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</label><div class=\"mt-2\"><input id=\"reps\" value=\"0\" type=\"number\" name=\"reps\" id=\"reps\" autocomplete=\"family-name\" class=\"p-2 block w-1/2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6\" required></div></div><div class=\"col-span-full\"><label for=\"notes\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

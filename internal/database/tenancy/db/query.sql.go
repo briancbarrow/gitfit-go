@@ -80,6 +80,7 @@ func (q *Queries) ListExercises(ctx context.Context) ([]Exercise, error) {
 const listWorkoutSets = `-- name: ListWorkoutSets :many
 SELECT workout_sets.id, workout_sets.date, workout_sets.exercise, workout_sets.reps, workout_sets.note, exercises.name as exercise_name, exercises.target_area FROM workout_sets
 JOIN exercises ON workout_sets.exercise = exercises.id
+WHERE workout_sets.date = ?
 `
 
 type ListWorkoutSetsRow struct {
@@ -92,8 +93,8 @@ type ListWorkoutSetsRow struct {
 	TargetArea   string
 }
 
-func (q *Queries) ListWorkoutSets(ctx context.Context) ([]ListWorkoutSetsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listWorkoutSets)
+func (q *Queries) ListWorkoutSets(ctx context.Context, date string) ([]ListWorkoutSetsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listWorkoutSets, date)
 	if err != nil {
 		return nil, err
 	}

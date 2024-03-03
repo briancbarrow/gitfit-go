@@ -10,10 +10,14 @@ type TableAndFormOptions struct {
 	TemplateData   ui.TemplateData
 	ExerciseList   []tenant_database.Exercise
 	WorkoutSetList []tenant_database.ListWorkoutSetsRow
+	Date           string
 }
 
 templ TableAndForm(options TableAndFormOptions) {
-	<div id="table-and-form" class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+	<div
+ 		id="table-and-form"
+ 		class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8"
+	>
 		<!-- Left column -->
 		<div class="grid grid-cols-1 gap-4 lg:col-span-2">
 			<section aria-labelledby="section-1-title">
@@ -21,7 +25,7 @@ templ TableAndForm(options TableAndFormOptions) {
 				<div class="overflow-hidden rounded-lg bg-white shadow">
 					<div class="p-6">
 						<div class="relative rounded border border-dashed border-gray-400">
-							@WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken)
+							@WorkoutSetTable(options.WorkoutSetList, web.NonceValue, options.TemplateData.CSRFToken, options.Date)
 						</div>
 					</div>
 				</div>

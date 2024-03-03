@@ -5,8 +5,25 @@ import "strconv"
 import "time"
 import "github.com/briancbarrow/gitfit-go/cmd/web"
 
-templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue web.NonceKey, csrfToken string) {
-	<input type="date" name="date" value={ time.Now().Format("2006-01-02") } id="date" autocomplete="given-name" class="p-2 max-w-80 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required/>
+templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue web.NonceKey, csrfToken string, date string) {
+	<input
+ 		id="table-date"
+ 		type="date"
+ 		name="date"
+ 		if date == "" {
+			value={ time.Now().Format("2006-01-02") }
+		} else {
+			value={ date }
+		}
+ 		hx-get="/workout-sets"
+ 		hx-target="#table-and-form"
+ 		hx-trigger="change"
+ 		hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
+ 		id="date"
+ 		autocomplete="given-name"
+ 		class="p-2 max-w-80 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+ 		required
+	/>
 	<table id="set-table" class="min-w-full divide-y divide-gray-300">
 		<thead>
 			<tr>
@@ -92,6 +109,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
  										hx-target="#table-and-form"
  										hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
  										hx-indicator=".actions"
+ 										hx-include="#table-date"
 									>Delete</button>
 								</div>
 							</div>

@@ -6,70 +6,17 @@ import (
 	"net/http"
 
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
-	dashboard_components "github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 
 	database "github.com/briancbarrow/gitfit-go/internal/database/db"
 	"github.com/briancbarrow/gitfit-go/internal/database/dbErrors"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
-	tenant_database "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 	"github.com/mattn/go-sqlite3"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/users"
 	"github.com/stytchauth/stytch-go/v11/stytch/stytcherror"
 )
-
-func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
-	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
-	user, err := app.queries.GetUser(r.Context(), userID.(string))
-	if err != nil {
-		app.serverError(w, r, err)
-	}
-	dbID := user.DatabaseID
-
-	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
-
-	tableAndFormOptions.TemplateData = app.newTemplateData(r)
-	db, err := tenancy.OpenTenantDB(dbID)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
-
-	tenantQueries := tenant_database.New(db)
-
-	exerciseListChan := make(chan []tenant_database.Exercise, 1)
-	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
-	errChan := make(chan error, 2)
-
-	go func() {
-		exerciseList, err := tenantQueries.ListExercises(r.Context())
-		if err != nil {
-			errChan <- err
-			return
-		}
-		exerciseListChan <- exerciseList
-	}()
-
-	go func() {
-		workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context())
-		if err != nil {
-			errChan <- err
-			return
-		}
-		workoutSetListChan <- workoutSetList
-	}()
-
-	tableAndFormOptions.ExerciseList = <-exerciseListChan
-	tableAndFormOptions.WorkoutSetList = <-workoutSetListChan
-
-	select {
-	case err := <-errChan:
-		app.serverError(w, r, err)
-	default:
-		pages.Dashboard(tableAndFormOptions).Render(r.Context(), w)
-	}
-}
 
 func (app *application) loginGet(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)

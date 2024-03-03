@@ -1,6 +1,7 @@
 -- name: ListWorkoutSets :many
 SELECT workout_sets.*, exercises.name as exercise_name, exercises.target_area FROM workout_sets
-JOIN exercises ON workout_sets.exercise = exercises.id;
+JOIN exercises ON workout_sets.exercise = exercises.id
+WHERE workout_sets.date = ?;
 
 
 -- name: CreateWorkoutSet :one
