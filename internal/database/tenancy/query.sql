@@ -1,3 +1,8 @@
+-- name: GetWorkoutSetCounts :many
+SELECT date, COUNT(*) as count 
+FROM workout_sets
+GROUP BY date;
+
 -- name: ListWorkoutSets :many
 SELECT workout_sets.*, exercises.name as exercise_name, exercises.target_area FROM workout_sets
 JOIN exercises ON workout_sets.exercise = exercises.id

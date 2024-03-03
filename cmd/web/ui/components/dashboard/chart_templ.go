@@ -11,18 +11,42 @@ import "io"
 import "bytes"
 
 import "time"
-import "strconv"
+import "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
 
 type ChartData struct {
-	FirstWeekday time.Weekday
-	DayData      [][]time.Time
+	FirstWeekday     time.Weekday
+	DayData          [][]time.Time
+	WorkoutSetCounts []tenant_database.GetWorkoutSetCountsRow
+	FirstDayFound    bool
 }
 
-var firstDayFound = false
-
-func updateFirstDayFound() string {
-	firstDayFound = true
+func updateFirstDayFound(chartData *ChartData) string {
+	chartData.FirstDayFound = true
 	return ""
+}
+
+var colorMap = map[int]string{
+	1: "bg-green-100",
+	2: "bg-green-200",
+	3: "bg-green-300",
+	4: "bg-green-400",
+	5: "bg-green-500",
+	6: "bg-green-600",
+	7: "bg-green-700",
+	8: "bg-green-800",
+	9: "bg-green-900",
+}
+
+func getClassForDay(day time.Time, workoutSetCounts []tenant_database.GetWorkoutSetCountsRow) string {
+	for _, workoutSetCount := range workoutSetCounts {
+		if workoutSetCount.Date == day.Format("2006-01-02") {
+			if workoutSetCount.Count > 9 {
+				return colorMap[9]
+			}
+			return colorMap[int(workoutSetCount.Count)]
+		}
+	}
+	return "bg-gray-200"
 }
 
 func Chart(chartData ChartData) templ.Component {
@@ -38,11 +62,11 @@ func Chart(chartData ChartData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><h1>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-8\"><h1>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var2 := `Chart`
+		templ_7745c5c3_Var2 := `2024`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -58,7 +82,7 @@ func Chart(chartData ChartData) templ.Component {
 			}
 			for dayIdx, day := range weekDay {
 				if dayIdx == 0 {
-					if day.Weekday() != chartData.FirstWeekday && !firstDayFound {
+					if day.Weekday() != chartData.FirstWeekday && !chartData.FirstDayFound {
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td class=\"day-square h-4 border-4 border-white bg-white-200\"></td>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -68,7 +92,7 @@ func Chart(chartData ChartData) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						var templ_7745c5c3_Var3 string = updateFirstDayFound()
+						var templ_7745c5c3_Var3 string = updateFirstDayFound(&chartData)
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
@@ -79,12 +103,29 @@ func Chart(chartData ChartData) templ.Component {
 						}
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <td class=\"day-square h-4 border-4 border-white bg-gray-200\"><span class=\"hidden tooltip absolute\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var4 string = day.Format("2006-01-02")
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+				var templ_7745c5c3_Var4 = []any{"day-square", "h-4", "rounded", "border-4", "border-white", "bg-gray-100", getClassForDay(day, chartData.WorkoutSetCounts)}
+				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<td class=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var4).String()))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><span class=\"hidden tooltip absolute\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var5 string = day.Format("2006-01-02")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

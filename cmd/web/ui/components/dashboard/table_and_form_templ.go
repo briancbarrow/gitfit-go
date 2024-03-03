@@ -37,7 +37,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"table-and-form\" class=\"grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8\"><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"table-and-form\"><div class=\"grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8\"><!--")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,7 +55,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -81,7 +81,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative rounded border border-dashed border-gray-400\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -97,7 +97,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script nonce=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

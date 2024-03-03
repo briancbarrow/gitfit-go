@@ -1,8 +1,8 @@
 package server
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -43,10 +43,17 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 
 	exerciseListChan := make(chan []tenant_database.Exercise, 1)
 	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
-	errChan := make(chan error, 2)
+	chartDataChan := make(chan dashboard_components.ChartData, 1)
+	errChan := make(chan error, 3)
 
-	chartData := app.BuildChart()
-	tableAndFormOptions.ChartData = chartData
+	go func() {
+		chartData, err := app.GatherChartData(tenantQueries, r.Context())
+		if err != nil {
+			errChan <- err
+			return
+		}
+		chartDataChan <- chartData
+	}()
 
 	go func() {
 		exerciseList, err := tenantQueries.ListExercises(r.Context())
@@ -68,6 +75,7 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 
 	tableAndFormOptions.ExerciseList = <-exerciseListChan
 	tableAndFormOptions.WorkoutSetList = <-workoutSetListChan
+	tableAndFormOptions.ChartData = <-chartDataChan
 
 	select {
 	case err := <-errChan:
@@ -188,7 +196,13 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
 }
 
-func (app *application) BuildChart() dashboard_components.ChartData {
+func (app *application) GatherChartData(tenantQueries *tenant_database.Queries, reqContext context.Context) (dashboard_components.ChartData, error) {
+
+	workoutSetCounts, err := tenantQueries.GetWorkoutSetCounts(reqContext)
+	if err != nil {
+		return dashboard_components.ChartData{}, err
+	}
+
 	firstDayOfYear := time.Date(time.Now().Year(), 1, 1, 0, 0, 0, 0, time.UTC)
 	weekDay := firstDayOfYear.Weekday()
 	days := make([][]time.Time, 7)
@@ -202,13 +216,12 @@ func (app *application) BuildChart() dashboard_components.ChartData {
 		// Move to the next day
 		currentDay = currentDay.AddDate(0, 0, 1)
 	}
-	fmt.Println("is length 7?", len(days))
-	for i := 0; i < len(days); i++ {
-		fmt.Println(len(days[i]))
-	}
+
 	chartInfo := dashboard_components.ChartData{
-		FirstWeekday: weekDay,
-		DayData:      days,
+		FirstWeekday:     weekDay,
+		DayData:          days,
+		WorkoutSetCounts: workoutSetCounts,
+		FirstDayFound:    false,
 	}
-	return chartInfo
+	return chartInfo, nil
 }

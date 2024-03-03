@@ -50,6 +50,40 @@ func (q *Queries) DeleteWorkoutSet(ctx context.Context, id int64) error {
 	return err
 }
 
+const getWorkoutSetCounts = `-- name: GetWorkoutSetCounts :many
+SELECT date, COUNT(*) as count 
+FROM workout_sets
+GROUP BY date
+`
+
+type GetWorkoutSetCountsRow struct {
+	Date  string
+	Count int64
+}
+
+func (q *Queries) GetWorkoutSetCounts(ctx context.Context) ([]GetWorkoutSetCountsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getWorkoutSetCounts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetWorkoutSetCountsRow
+	for rows.Next() {
+		var i GetWorkoutSetCountsRow
+		if err := rows.Scan(&i.Date, &i.Count); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listExercises = `-- name: ListExercises :many
 SELECT id, name, target_area FROM exercises
 `

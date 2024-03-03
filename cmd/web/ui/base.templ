@@ -1,6 +1,7 @@
 package ui
 
 import "github.com/briancbarrow/gitfit-go/cmd/web"
+import "time"
 
 templ Base(td TemplateData) {
 	<!DOCTYPE html>
@@ -37,7 +38,7 @@ templ Footer() {
 				// </a>
 			</div>
 			<div class="mt-8 md:order-1 md:mt-0">
-				<p class="text-center text-xs leading-5 text-gray-500">&copy; 2023 GitFit, Inc. All rights reserved.</p>
+				<p class="text-center text-xs leading-5 text-gray-500">&copy; { time.Now().Format("2006") } Brian Barrow. All rights reserved.</p>
 			</div>
 		</div>
 	</footer>
