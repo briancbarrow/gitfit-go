@@ -11,6 +11,50 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func (app *application) GetTableAndFormOptions(r *http.Request, dbID string) (dashboard_components.TableAndFormOptions, error) {
+	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
+
+	tableAndFormOptions.TemplateData = app.newTemplateData(r)
+	db, err := tenancy.OpenTenantDB(dbID)
+	if err != nil {
+		return dashboard_components.TableAndFormOptions{}, err
+	}
+
+	tenantQueries := tenant_database.New(db)
+
+	exerciseListChan := make(chan []tenant_database.Exercise, 1)
+	workoutSetListChan := make(chan []tenant_database.ListWorkoutSetsRow, 1)
+	errChan := make(chan error, 2)
+
+	go func() {
+		exerciseList, err := tenantQueries.ListExercises(r.Context())
+		if err != nil {
+			errChan <- err
+			return
+		}
+		exerciseListChan <- exerciseList
+	}()
+
+	go func() {
+		workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context())
+		if err != nil {
+			errChan <- err
+			return
+		}
+		workoutSetListChan <- workoutSetList
+	}()
+
+	tableAndFormOptions.ExerciseList = <-exerciseListChan
+	tableAndFormOptions.WorkoutSetList = <-workoutSetListChan
+
+	select {
+	case err := <-errChan:
+		return dashboard_components.TableAndFormOptions{}, err
+	default:
+		return tableAndFormOptions, nil
+	}
+}
+
 func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
 
@@ -20,9 +64,6 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 	}
 	dbID := user.DatabaseID
 
-	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
-
-	tableAndFormOptions.TemplateData = app.newTemplateData(r)
 	db, err := tenancy.OpenTenantDB(dbID)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -60,7 +101,12 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 	}
 
-	app.dashboardGet(w, r)
+	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
 }
 
 func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) {
@@ -72,9 +118,10 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 	}
 	dbID := user.DatabaseID
 
-	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
-
-	tableAndFormOptions.TemplateData = app.newTemplateData(r)
+	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 	db, err := tenancy.OpenTenantDB(dbID)
 	if err != nil {
 		app.serverError(w, r, err)
@@ -95,5 +142,5 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 		app.serverError(w, r, err)
 	}
 
-	app.dashboardGet(w, r)
+	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
 }

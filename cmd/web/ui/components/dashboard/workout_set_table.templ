@@ -53,7 +53,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
 							<div>
 								<button
  									type="button"
- 									class="inline-flex w-full justify-center gap-x-1.5 bg-white text-sm font-semibold text-gray-900 ring-gray-300 hover:bg-gray-50"
+ 									class="actions inline-flex w-full justify-center gap-x-1.5 bg-white text-sm font-semibold text-gray-900 ring-gray-300 hover:bg-gray-50"
  									id="menu-button"
  									aria-expanded="true"
  									aria-haspopup="true"
@@ -91,6 +91,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
  										hx-delete={ "/delete-set/" + strconv.Itoa(int(wset.ID)) }
  										hx-target="#table-and-form"
  										hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
+ 										hx-indicator=".actions"
 									>Delete</button>
 								</div>
 							</div>
