@@ -60,10 +60,8 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 func (app *application) isAuthenticated(r *http.Request) bool {
 	var stytchSessionToken string
 	if _, ok := app.sessionManager.Get(r.Context(), "stytchSessionToken").(string); ok {
-		// The "name" key exists in the map
 		stytchSessionToken = app.sessionManager.Get(r.Context(), "stytchSessionToken").(string)
 	} else {
-		// The "name" key does not exist in the map
 		stytchSessionToken = ""
 	}
 	resp, err := app.stytchAPIClient.Sessions.Authenticate(r.Context(), &sessions.AuthenticateParams{
