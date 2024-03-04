@@ -27,7 +27,7 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-boost=\"true\" action=\"/new-set\" hx-replace-url=\"false\" method=\"post\" hx-target=\"#table-and-form\" hx-swap=\"outerHTML\" class=\"bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2\"><div class=\"px-4 py-6 sm:p-8\"><div class=\"grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6\"><div class=\"sm:col-span-6 col-span-4\"><label for=\"date\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form hx-boost=\"true\" action=\"/workout-sets\" hx-replace-url=\"false\" method=\"post\" hx-target=\"#table-and-form\" hx-swap=\"outerHTML\" class=\"bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2\"><div class=\"px-4 py-6 sm:p-8\"><div class=\"grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6\"><div class=\"sm:col-span-6 col-span-4\"><label for=\"date\" class=\"block text-sm font-medium leading-6 text-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
