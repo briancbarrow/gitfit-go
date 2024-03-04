@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/justinas/nosurf"
 )
@@ -66,16 +65,12 @@ func noSurf(next http.Handler) http.Handler {
 	})
 
 	csrfHandler.SetFailureHandler(FailureFunction())
-	csrfHandler.ExemptFunc(func(r *http.Request) bool {
-		return strings.HasPrefix(r.URL.Path, "/delete-set/")
-	})
 	return csrfHandler
 }
 
 func FailureFunction() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Request Failed. Reason: %v", nosurf.Reason(r))
-		fmt.Println("TOKEN", nosurf.Token(r))
 		http.Error(w, http.StatusText(nosurf.FailureCode), nosurf.FailureCode)
 	})
 }

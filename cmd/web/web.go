@@ -10,7 +10,7 @@ type NonceKey string
 const NonceValue = NonceKey("nonce")
 
 type HxHeader struct {
-	XCSRFToken string `json:"X-CSRFToken"`
+	XCSRFToken string `json:"X-CSRF-Token"`
 }
 
 func ConvertHeaderToJSON(token string) string {
