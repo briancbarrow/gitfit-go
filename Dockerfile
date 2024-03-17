@@ -9,7 +9,7 @@ COPY go.build.mod ./go.mod
 COPY go.sum ./
 COPY cmd/ ./cmd/
 COPY internal ./internal
-COPY .env.local .env
+COPY .env .env
 # Copy the source code to the container
 # COPY . .
 COPY scs/libsqlstore /go/src/scs/libsqlstore
