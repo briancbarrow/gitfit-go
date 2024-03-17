@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -31,7 +32,6 @@ func (app *application) dashboardGet(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, date string) (dashboard_components.TableAndFormOptions, error) {
 	tableAndFormOptions := dashboard_components.TableAndFormOptions{}
-
 	tableAndFormOptions.TemplateData = app.newTemplateData(r)
 	tableAndFormOptions.Date = date
 	db, err := tenancy.OpenTenantDB(dbID)
@@ -158,8 +158,11 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
 }
 
+type DeleteWorkoutSetPayload struct {
+	Date string `json:"date"`
+}
+
 func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
 	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
 
 	user, err := app.queries.GetUser(r.Context(), userID.(string))
@@ -188,7 +191,13 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 		app.serverError(w, r, err)
 	}
 
-	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID, r.Form.Get("date"))
+	var payload DeleteWorkoutSetPayload
+	err = json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
+	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID, payload.Date)
 	if err != nil {
 		app.serverError(w, r, err)
 	}

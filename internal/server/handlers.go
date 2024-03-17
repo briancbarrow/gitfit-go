@@ -7,11 +7,11 @@ import (
 
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
+	"github.com/mattn/go-sqlite3"
 
 	database "github.com/briancbarrow/gitfit-go/internal/database/db"
 	"github.com/briancbarrow/gitfit-go/internal/database/dbErrors"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
-	"github.com/mattn/go-sqlite3"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/passwords"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/sessions"
 	"github.com/stytchauth/stytch-go/v11/stytch/consumer/users"

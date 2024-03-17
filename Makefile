@@ -23,4 +23,14 @@ clean:
 	@rm -f main
 
 .PHONY: all build run test clean
+
+.PHONY: modsync
+modsync: 
+	go mod tidy
+	go mod vendor
+
+.PHONY: docker
+docker: modsync
+	docker build -t gitfit-go .
+	docker run --rm -it -p 8080:8080 gitfit-go:latest
 		

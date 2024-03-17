@@ -49,12 +49,12 @@ func Register(form ui.UserRegisterForm, td ui.TemplateData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if len(form.NonFieldErrors) > 0 {
+			if len(form.Validator.NonFieldErrors) > 0 {
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"p-4 mb-2 bg-red-200 border-red text-red rounded\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				for _, error := range form.NonFieldErrors {
+				for _, error := range form.Validator.NonFieldErrors {
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -74,7 +74,7 @@ func Register(form ui.UserRegisterForm, td ui.TemplateData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"space-y-6\" hx-boost=\"true\" hx-disabled-elt=\"button input\" action=\"/register\" hx-indicator=\"#register-spinner\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"space-y-6\" action=\"/register\" method=\"POST\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

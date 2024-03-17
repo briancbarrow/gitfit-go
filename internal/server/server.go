@@ -14,7 +14,6 @@ import (
 	"github.com/alexedwards/scs/libsqlstore"
 	"github.com/alexedwards/scs/v2"
 	database "github.com/briancbarrow/gitfit-go/internal/database/db"
-	"github.com/briancbarrow/gitfit-go/internal/models"
 	"github.com/briancbarrow/gitfit-go/internal/prettylog"
 	"github.com/go-playground/form/v4"
 	"github.com/joho/godotenv"
@@ -25,7 +24,6 @@ import (
 
 type application struct {
 	logger          *slog.Logger
-	users           *models.UserModel
 	formDecoder     *form.Decoder
 	sessionManager  *scs.SessionManager
 	stytchAPIClient *stytchapi.API
@@ -48,19 +46,13 @@ func openDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func NewServer(isProd bool) *http.Server {
-	var filepath string
-	if isProd {
-		filepath = ".env"
-	} else {
-		filepath = ".env.local"
-	}
+func NewServer() *http.Server {
 
-	err := godotenv.Load(filepath)
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file", err)
 	}
-	addr := flag.String("addr", ":4000", "HTTP network address")
+	addr := flag.String("addr", ":8080", "HTTP network address")
 
 	// TODO: Look into if there is a better way to do prettylog
 	logger := slog.New(prettylog.NewHandler(&slog.HandlerOptions{
@@ -89,7 +81,6 @@ func NewServer(isProd bool) *http.Server {
 	sessionManager.Lifetime = 12 * time.Hour
 
 	app := &application{
-		users:           &models.UserModel{DB: db},
 		logger:          logger,
 		formDecoder:     formDecoder,
 		sessionManager:  sessionManager,

@@ -31,6 +31,4 @@ require (
 	nhooyr.io/websocket v1.8.7 // indirect
 )
 
-// replace github.com/alexedwards/scs/sqlite3store => ../scs/sqlite3store
-
-replace github.com/alexedwards/scs/libsqlstore => ../scs/libsqlstore
+replace github.com/alexedwards/scs/libsqlstore => /go/src/scs/libsqlstore

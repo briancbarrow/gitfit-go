@@ -12,7 +12,7 @@ import (
 
 func main() {
 	dbId := flag.String("dbId", "", "The database id to run the migrations on")
-	godotenv.Load("../../../../.env.local")
+	godotenv.Load()
 	flag.Parse()
 	authToken := os.Getenv("TURSO_DB_TOKEN")
 

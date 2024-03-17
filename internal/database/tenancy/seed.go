@@ -12,11 +12,11 @@ import (
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
-//go:embed *.sql *.csv
+//go:embed setup
 var embedFiles embed.FS
 
 func InsertDataFromCSV(dbUrl string) error {
-	csvFile := "exercises.csv"
+	csvFile := "setup/exercises.csv"
 	db, err := sql.Open("libsql", dbUrl)
 	if err != nil {
 		return err
@@ -61,7 +61,6 @@ func InsertDataFromCSV(dbUrl string) error {
 }
 
 func CreateTenantTables(dbUrl string) error {
-
 	// https://github.com/libsql/libsql-client-go/#open-a-connection-to-sqld
 	// libsql://[your-database].turso.io?authToken=[your-auth-token]
 	db, err := sql.Open("libsql", dbUrl)
@@ -72,7 +71,7 @@ func CreateTenantTables(dbUrl string) error {
 	if err := goose.SetDialect("sqlite"); err != nil {
 		return err
 	}
-	if err := goose.Up(db, "."); err != nil {
+	if err := goose.Up(db, "setup"); err != nil {
 		return err
 	}
 	return nil
