@@ -1,19 +1,24 @@
 package components
 
+// SpinnerAttrs is a struct that represents the attributes of the Spinner component
 type SpinnerAttrs struct {
-	Color        string
-	Size         string
-	IndicatorId  string
+	// Color: the tailwind color for the color of the spinner
+	Color string
+	// Size: the tailwind classes for the size of the spinner
+	Size string
+	// XShow: the alpinejs x-show attribute for the spinner
+	XShow string
+	// ExtraClasses: extra classes to add to the spinner
 	ExtraClasses string
 }
 
 templ Spinner(options SpinnerAttrs) {
 	<svg
- 		id={ options.IndicatorId }
  		class={ "animate-spin ml-2 mr-3", "text-"+options.Color, options.Size, options.ExtraClasses }
  		xmlns="http://www.w3.org/2000/svg"
  		fill="none"
  		viewBox="0 0 24 24"
+ 		x-show={ options.XShow }
 	>
 		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 		<path

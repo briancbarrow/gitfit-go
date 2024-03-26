@@ -3,7 +3,7 @@ module github.com/briancbarrow/gitfit-go
 go 1.21.3
 
 require (
-	github.com/a-h/templ v0.2.432
+	github.com/a-h/templ v0.2.639
 	github.com/alexedwards/scs/libsqlstore v0.0.0-00010101000000-000000000000
 	github.com/alexedwards/scs/v2 v2.7.0
 	github.com/go-playground/form/v4 v4.2.1

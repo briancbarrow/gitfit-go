@@ -53,17 +53,11 @@ templ Register(form ui.UserRegisterForm, td ui.TemplateData) {
             Required: true,
             Type: "password",
           })
-					@components.Button(components.ButtonAttrs{
-              Type: "submit",
+					@components.Button(components.ButtonProps{
               Text: "Register",
-            }) {
-						@components.Spinner(components.SpinnerAttrs{
-              Color: "white",
-              Size: "h-5 w-5",
-              IndicatorId: "register-spinner",
-              ExtraClasses: "htmx-indicator",
+            }, map[string]any{
+              "type": "submit",
             })
-					}
 				</form>
 				<p class="mt-10 text-center text-sm text-gray-500">
 					Already a member? 
