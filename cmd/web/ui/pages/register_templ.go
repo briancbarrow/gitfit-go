@@ -11,6 +11,7 @@ import "io"
 import "bytes"
 
 import (
+	"fmt"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
 )
@@ -53,7 +54,7 @@ func Register(form ui.UserRegisterForm, td ui.TemplateData) templ.Component {
 					var templ_7745c5c3_Var3 string
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(error)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/pages/register.templ`, Line: 20, Col: 18}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/pages/register.templ`, Line: 21, Col: 18}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
@@ -76,7 +77,7 @@ func Register(form ui.UserRegisterForm, td ui.TemplateData) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(td.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/pages/register.templ`, Line: 29, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/pages/register.templ`, Line: 32, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -124,15 +125,44 @@ func Register(form ui.UserRegisterForm, td ui.TemplateData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			templ_7745c5c3_Var5 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+				if !templ_7745c5c3_IsBuffer {
+					templ_7745c5c3_Buffer = templ.GetBuffer()
+					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+				}
+				templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = components.Spinner(components.SpinnerAttrs{
+					Size:  "h-6 w-6",
+					Color: "white",
+					OtherAttrs: templ.Attributes{
+						"x-show": "isSubmitting",
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if !templ_7745c5c3_IsBuffer {
+					_, templ_7745c5c3_Err = io.Copy(templ_7745c5c3_W, templ_7745c5c3_Buffer)
+				}
+				return templ_7745c5c3_Err
+			})
 			templ_7745c5c3_Err = components.Button(components.ButtonProps{
-				Text: "Register",
-			}, map[string]any{
-				"type": "submit",
-			}).Render(ctx, templ_7745c5c3_Buffer)
+				Variant: "primary",
+				OtherAttrs: templ.Attributes{
+					"x-bind:disabled": "isSubmitting ? true : false",
+					"type":            "submit",
+					"class":           fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
+				},
+			},
+			).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

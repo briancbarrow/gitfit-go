@@ -11,13 +11,14 @@ import "io"
 import "bytes"
 
 var ButtonVariants map[string]string = map[string]string{
-	"primary":   "bg-indigo-600 text-white hover:bg-indigo-500 focus-visible:outline-indigo-600 disabled:bg-indigo-500 disabled:opacity-75",
+	"primary":   "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600 disabled:bg-blue-500 disabled:opacity-75",
 	"secondary": "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600",
 }
 
 type ButtonProps struct {
-	Variant string
-	Text    string
+	Variant    string
+	Text       string
+	OtherAttrs templ.Attributes
 }
 
 func getVariantValue(variant string) string {
@@ -27,7 +28,7 @@ func getVariantValue(variant string) string {
 	return ButtonVariants[variant]
 }
 
-func Button(props ButtonProps, otherAttrs templ.Attributes) templ.Component {
+func Button(props ButtonProps) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -40,7 +41,7 @@ func Button(props ButtonProps, otherAttrs templ.Attributes) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{getVariantValue(props.Variant)}
+		var templ_7745c5c3_Var2 = []any{getVariantValue(props.Variant), "rounded-md px-3 py-2 text-sm font-semibold shadow-sm"}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -49,7 +50,7 @@ func Button(props ButtonProps, otherAttrs templ.Attributes) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, otherAttrs)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, props.OtherAttrs)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -73,7 +74,7 @@ func Button(props ButtonProps, otherAttrs templ.Attributes) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(props.Text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/button.templ`, Line: 22, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/button.templ`, Line: 23, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {

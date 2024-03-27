@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -70,6 +70,7 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 			errChan <- err
 			return
 		}
+		fmt.Println("Workout set list: ", workoutSetList)
 		workoutSetListChan <- workoutSetList
 	}()
 
@@ -104,6 +105,7 @@ func (app *application) GetWorkoutSetTable(w http.ResponseWriter, r *http.Reques
 }
 
 func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(5 * time.Second)
 	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
 
 	user, err := app.queries.GetUser(r.Context(), userID.(string))
@@ -178,29 +180,34 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 
 	tenantQueries := tenant_database.New(db)
 	params := httprouter.ParamsFromContext(r.Context())
-
+	fmt.Println("Params: ", params)
 	setId := params.ByName("id")
 	setIdInt, err := strconv.ParseInt(setId, 10, 64)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-
+	fmt.Println("Deleting set with id: ", setId)
 	// delete set
 	err = tenantQueries.DeleteWorkoutSet(r.Context(), setIdInt)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-
+	fmt.Println("Deleted set with id: ", setId)
 	var payload DeleteWorkoutSetPayload
-	err = json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
 
+	// err = json.NewDecoder(r.Body).Decode(&payload)
+	// if err != nil {
+	// 	app.serverError(w, r, err)
+	// }
+
+	q := r.URL.Query()
+	payload.Date = q.Get("date")
+	fmt.Println("Got payload: ", payload)
 	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID, payload.Date)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
+	fmt.Println("Table and form options: ", tableAndFormOptions.WorkoutSetList)
 
 	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
 }

@@ -121,7 +121,9 @@ func LoginPage(form ui.UserLoginForm, td ui.TemplateData) templ.Component {
 				templ_7745c5c3_Err = components.Spinner(components.SpinnerAttrs{
 					Size:  "h-6 w-6",
 					Color: "white",
-					XShow: "isSubmitting",
+					OtherAttrs: templ.Attributes{
+						"x-show": "isSubmitting",
+					},
 				}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -133,10 +135,11 @@ func LoginPage(form ui.UserLoginForm, td ui.TemplateData) templ.Component {
 			})
 			templ_7745c5c3_Err = components.Button(components.ButtonProps{
 				Variant: "primary",
-			}, map[string]any{
-				"x-bind:disabled": "isSubmitting ? true : false",
-				"type":            "submit",
-				"class":           fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
+				OtherAttrs: templ.Attributes{
+					"x-bind:disabled": "isSubmitting ? true : false",
+					"type":            "submit",
+					"class":           fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
+				},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

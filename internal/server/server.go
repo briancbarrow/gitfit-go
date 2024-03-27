@@ -48,7 +48,7 @@ func openDB() (*sql.DB, error) {
 
 func NewServer() *http.Server {
 
-	err := godotenv.Load()
+	err := godotenv.Load(".env.local")
 	if err != nil {
 		log.Fatal("Error loading .env file", err)
 	}

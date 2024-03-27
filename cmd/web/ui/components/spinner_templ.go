@@ -16,10 +16,12 @@ type SpinnerAttrs struct {
 	Color string
 	// Size: the tailwind classes for the size of the spinner
 	Size string
-	// XShow: the alpinejs x-show attribute for the spinner
-	XShow string
+	// // XShow: the alpinejs x-show attribute for the spinner
+	// XShow string
 	// ExtraClasses: extra classes to add to the spinner
 	ExtraClasses string
+	// OtherAttrs: any other attributes you want to add to the spinner
+	OtherAttrs templ.Attributes
 }
 
 func Spinner(options SpinnerAttrs) templ.Component {
@@ -57,12 +59,7 @@ func Spinner(options SpinnerAttrs) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(options.XShow)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/spinner.templ`, Line: 21, Col: 25}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, options.OtherAttrs)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

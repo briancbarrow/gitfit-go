@@ -70,6 +70,7 @@ func CheckIfTenantDBExists(databaseID string) (bool, error) {
 }
 
 func SeedTenantDB(databaseID string) error {
+	fmt.Println("Seeding tenant db", os.Getenv("FAKE"))
 	dbUrl := fmt.Sprintf("libsql://%s-briancbarrow.turso.io?authToken=%s", databaseID, os.Getenv("TURSO_DB_TOKEN"))
 	fmt.Println("Running migrations on", dbUrl)
 	err := CreateTenantTables(dbUrl)

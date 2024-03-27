@@ -16,13 +16,26 @@
   @apply font-semibold leading-6 text-indigo-600 hover:text-indigo-500;
 }
 
-.htmx-indicator {
+.my-indicator {
   opacity: 0;
-  transition: opacity 500ms ease-in;
+  width: 0px;
+  transition: opacity width 500ms ease-in;
 }
-.htmx-request .htmx-indicator {
+.htmx-request .my-indicator {
   opacity: 1;
+  width: auto;
 }
-.htmx-request.htmx-indicator {
+.htmx-request.my-indicator {
   opacity: 1;
+  width: auto;
 }
+
+/* .my-indicator{
+  display:none;
+}
+.htmx-request .my-indicator{
+  display:inline;
+}
+.htmx-request.my-indicator{
+  display:inline;
+} */

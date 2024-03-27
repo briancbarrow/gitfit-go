@@ -10,9 +10,12 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
-import "strconv"
-import "time"
+import (
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
+	"github.com/briancbarrow/gitfit-go/internal/database/tenancy/db"
+	"strconv"
+	"time"
+)
 
 func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -34,7 +37,7 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 14, Col: 76}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 28, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -52,7 +55,7 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(exercise.ID)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 22, Col: 54}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 36, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -65,7 +68,7 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(exercise.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 22, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 36, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -83,13 +86,52 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(csrfToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 41, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_form.templ`, Line: 55, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 7)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var6 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+			if !templ_7745c5c3_IsBuffer {
+				templ_7745c5c3_Buffer = templ.GetBuffer()
+				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+			}
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.Spinner(components.SpinnerAttrs{
+				Size:         "h-6 w-6",
+				Color:        "white",
+				ExtraClasses: "my-indicator",
+				OtherAttrs: templ.Attributes{
+					"id": "workout-set-form-spinner",
+				},
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if !templ_7745c5c3_IsBuffer {
+				_, templ_7745c5c3_Err = io.Copy(templ_7745c5c3_W, templ_7745c5c3_Buffer)
+			}
+			return templ_7745c5c3_Err
+		})
+		templ_7745c5c3_Err = components.Button(components.ButtonProps{
+			Variant: "primary",
+			OtherAttrs: templ.Attributes{
+				"type": "submit",
+			},
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

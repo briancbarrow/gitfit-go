@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
 )
@@ -22,42 +23,57 @@ templ Register(form ui.UserRegisterForm, td ui.TemplateData) {
 					</ul>
 				}
 				<form
- 					class="space-y-6"
- 					action="/register"
- 					method="POST"
+					class="space-y-6"
+					action="/register"
+					method="POST"
+					x-data="{ isSubmitting: false }"
+					x-on:submit="isSubmitting = true"
 				>
 					<input type="hidden" name="csrf_token" value={ td.CSRFToken }/>
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "First Name",
-            Name: "name",
-            FieldErrors: form.Validator.FieldErrors["name"],
-            Value: form.FirstName,
-          })
+						DisplayName: "First Name",
+						Name:        "name",
+						FieldErrors: form.Validator.FieldErrors["name"],
+						Value:       form.FirstName,
+					})
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "Last Name",
-            Name: "last_name",
-            FieldErrors: form.Validator.FieldErrors["last_name"],
-            Value: form.LastName,
-          })
+						DisplayName: "Last Name",
+						Name:        "last_name",
+						FieldErrors: form.Validator.FieldErrors["last_name"],
+						Value:       form.LastName,
+					})
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "Email",
-            Name: "email",
-            FieldErrors: form.Validator.FieldErrors["email"],
-            Value: form.Email,
-            Required: true,
-          })
+						DisplayName: "Email",
+						Name:        "email",
+						FieldErrors: form.Validator.FieldErrors["email"],
+						Value:       form.Email,
+						Required:    true,
+					})
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "Password",
-            Name: "password",
-            FieldErrors: form.Validator.FieldErrors["password"],
-            Required: true,
-            Type: "password",
-          })
+						DisplayName: "Password",
+						Name:        "password",
+						FieldErrors: form.Validator.FieldErrors["password"],
+						Required:    true,
+						Type:        "password",
+					})
 					@components.Button(components.ButtonProps{
-              Text: "Register",
-            }, map[string]any{
-              "type": "submit",
-            })
+						Variant: "primary",
+						OtherAttrs: templ.Attributes{
+							"x-bind:disabled": "isSubmitting ? true : false",
+							"type":            "submit",
+							"class":           fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
+						},
+					},
+					) {
+						<span x-show="!isSubmitting">Register</span>
+						@components.Spinner(components.SpinnerAttrs{
+							Size:  "h-6 w-6",
+							Color: "white",
+							OtherAttrs: templ.Attributes{
+								"x-show": "isSubmitting",
+							},
+						})
+					}
 				</form>
 				<p class="mt-10 text-center text-sm text-gray-500">
 					Already a member? 

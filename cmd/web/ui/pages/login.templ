@@ -19,37 +19,39 @@ templ LoginPage(form ui.UserLoginForm, td ui.TemplateData) {
 						<div class={ "error", templ.KV("block text-sm font-medium text-red-800", !ui.ErrorIsBlank(item)), templ.KV("hidden", ui.ErrorIsBlank(item)) }>{ item }</div>
 					}
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "Email",
-            Name: "email",
-            Value: form.Email,
-            Required: true,
-          })
+						DisplayName: "Email",
+						Name:        "email",
+						Value:       form.Email,
+						Required:    true,
+					})
 					@components.TextInput(components.TextInputAttrs{
-            DisplayName: "Password",
-            Name: "password",
-            Value: form.Password,
-            Required: true,
-            Type: "password",
-          })
+						DisplayName: "Password",
+						Name:        "password",
+						Value:       form.Password,
+						Required:    true,
+						Type:        "password",
+					})
 					@components.Button(components.ButtonProps{
-              Variant: "primary",
-            }, map[string]any{
-              "x-bind:disabled": "isSubmitting ? true : false",
-              "type": "submit",
-              "class": fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
-
-            }) {
+						Variant: "primary",
+						OtherAttrs: templ.Attributes{
+							"x-bind:disabled": "isSubmitting ? true : false",
+							"type":            "submit",
+							"class":           fmt.Sprintf("flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 %s", components.ButtonVariants["primary"]),
+						},
+					}) {
 						<span x-show="!isSubmitting">Sign in</span>
 						@components.Spinner(components.SpinnerAttrs{
-                Size: "h-6 w-6",
-                Color: "white",
-                XShow: "isSubmitting",
-              })
+							Size:  "h-6 w-6",
+							Color: "white",
+							OtherAttrs: templ.Attributes{
+								"x-show": "isSubmitting",
+							},
+						})
 					}
 				</form>
 				<p class="mt-10 text-center text-sm text-gray-500">
 					Not a member?
-					<a href="/register" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Register</a>
+					<a href="/register" class="font-semibold leading-6 text-blue-600 hover:text-blue-500">Register</a>
 				</p>
 			</div>
 		</div>
