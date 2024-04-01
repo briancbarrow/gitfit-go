@@ -38,7 +38,12 @@ func (app *application) logRequest(next http.Handler) http.Handler {
 func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !app.isAuthenticated(r) {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			if r.Header.Get("HX-Request") == "true" {
+				w.Header().Add("HX-Redirect", "/login")
+				return
+			} else {
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+			}
 		}
 
 		w.Header().Add("Cache-Control", "no-store")

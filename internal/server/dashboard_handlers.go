@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/briancbarrow/gitfit-go/cmd/web"
 	dashboard_components "github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
@@ -65,12 +66,11 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 	}()
 
 	go func() {
-		workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context(), date)
+		workoutSetList, err := app.GetWorkoutSetList(r, dbID, date)
 		if err != nil {
 			errChan <- err
 			return
 		}
-		fmt.Println("Workout set list: ", workoutSetList)
 		workoutSetListChan <- workoutSetList
 	}()
 
@@ -86,7 +86,22 @@ func (app *application) GetTableAndFormOptions(r *http.Request, dbID string, dat
 	}
 }
 
-func (app *application) GetWorkoutSetTable(w http.ResponseWriter, r *http.Request) {
+func (app *application) GetWorkoutSetList(r *http.Request, dbID string, date string) ([]tenant_database.ListWorkoutSetsRow, error) {
+	db, err := tenancy.OpenTenantDB(dbID)
+	if err != nil {
+		return nil, err
+	}
+
+	tenantQueries := tenant_database.New(db)
+	workoutSetList, err := tenantQueries.ListWorkoutSets(r.Context(), date)
+	if err != nil {
+		return nil, err
+	}
+
+	return workoutSetList, nil
+}
+
+func (app *application) GetWorkoutSetTableAndForm(w http.ResponseWriter, r *http.Request) {
 	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
 	user, err := app.queries.GetUser(r.Context(), userID.(string))
 	if err != nil {
@@ -105,7 +120,6 @@ func (app *application) GetWorkoutSetTable(w http.ResponseWriter, r *http.Reques
 }
 
 func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(5 * time.Second)
 	userID := app.sessionManager.Get(r.Context(), "authenticatedUserID")
 
 	user, err := app.queries.GetUser(r.Context(), userID.(string))
@@ -152,12 +166,14 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 	}
 
-	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID, date)
+	workoutSet, err := app.GetWorkoutSetList(r, dbID, date)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
 
-	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
+	templateData := app.newTemplateData(r)
+
+	dashboard_components.WorkoutSetTable(workoutSet, web.NonceValue, templateData.CSRFToken, date).Render(r.Context(), w)
 }
 
 type DeleteWorkoutSetPayload struct {
