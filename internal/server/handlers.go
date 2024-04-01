@@ -133,7 +133,7 @@ func (app *application) userLoginPostStytch(w http.ResponseWriter, r *http.Reque
 	params := &passwords.AuthenticateParams{
 		Email:                  form.Email,
 		Password:               form.Password,
-		SessionDurationMinutes: 60,
+		SessionDurationMinutes: 120,
 	}
 
 	stytchResponse, err := app.stytchAPIClient.Passwords.Authenticate(context.Background(), params)
