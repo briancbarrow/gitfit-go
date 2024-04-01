@@ -40,7 +40,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("2006-01-02"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 14, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 15, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -58,7 +58,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(date)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 16, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 17, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -81,7 +81,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(wset.Date)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 39, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 40, Col: 104}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -94,7 +94,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(wset.ExerciseName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 40, Col: 86}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 41, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -107,7 +107,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(wset.Reps)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 41, Col: 97}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 42, Col: 98}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -120,7 +120,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(wset.Note.String)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 42, Col: 85}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 43, Col: 86}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -133,7 +133,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("/delete-set/" + strconv.Itoa(int(wset.ID)) + "?date=" + date)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 107, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 108, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -146,7 +146,7 @@ func WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValue
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(web.ConvertHeaderToJSON(csrfToken))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 109, Col: 57}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/ui/components/dashboard/workout_set_table.templ`, Line: 110, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {

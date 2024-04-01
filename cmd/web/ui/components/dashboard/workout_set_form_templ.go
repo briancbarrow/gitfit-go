@@ -107,11 +107,11 @@ func WorkoutSetForm(exerciseList []tenant_database.Exercise, csrfToken string) t
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = components.Spinner(components.SpinnerAttrs{
-				Size:         "h-6 w-6",
-				Color:        "white",
-				ExtraClasses: "my-indicator",
+				Size:  "h-5 w-5",
+				Color: "white",
 				OtherAttrs: templ.Attributes{
-					"id": "workout-set-form-spinner",
+					"id":     "workout-set-form-spinner",
+					"x-show": "isSaving",
 				},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
