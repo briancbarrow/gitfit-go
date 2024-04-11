@@ -37,7 +37,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"table-and-form\"><div class=\"grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8\"><!-- Left column --><div class=\"grid grid-cols-1 gap-4 lg:col-span-2\"><section aria-labelledby=\"section-1-title\"><h2 class=\"sr-only\" id=\"section-1-title\">Section title</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -45,7 +45,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div><!-- Right column --><div class=\"grid grid-cols-1 gap-4\"><section aria-labelledby=\"section-2-title\"><h2 class=\"sr-only\" id=\"section-2-title\">Section title</h2><div class=\"overflow-hidden rounded-lg bg-white shadow\"><div class=\"p-6\"><div class=\"relative\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +53,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -61,7 +61,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -74,7 +74,7 @@ func TableAndForm(options TableAndFormOptions) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">\n    document.querySelectorAll('.day-square').forEach((square) => {\n      square.addEventListener('mouseover', (e) => {\n        const tooltip = e.target.querySelector('.tooltip')\n        if (tooltip) {\n          tooltip.classList.remove('hidden')\n        }\n      })\n      square.addEventListener('mouseout', (e) => {\n        const tooltip = e.target.querySelector('.tooltip')\n        if (tooltip) {\n          tooltip.classList.add('hidden')\n        }\n      })\n    })\n  </script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

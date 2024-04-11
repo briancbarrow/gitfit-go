@@ -64,9 +64,11 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 	} else {
 		stytchSessionToken = ""
 	}
+
 	resp, err := app.stytchAPIClient.Sessions.Authenticate(r.Context(), &sessions.AuthenticateParams{
 		SessionToken: stytchSessionToken,
 	})
+
 	if err != nil {
 		// TODO: Need to handle if stych is down and throwing errors rather than just returning false
 		return false

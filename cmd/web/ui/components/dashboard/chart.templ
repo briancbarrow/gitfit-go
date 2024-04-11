@@ -40,7 +40,7 @@ func getClassForDay(day time.Time, workoutSetCounts []tenant_database.GetWorkout
 }
 
 templ Chart(chartData ChartData) {
-	<div class="mt-8">
+	<div id="chart" hx-swap-oob="outerHTML:#chart" class="mt-8">
 		<h1>2024</h1>
 		<table class="w-full">
 			for _, weekDay := range chartData.DayData {
@@ -49,14 +49,14 @@ templ Chart(chartData ChartData) {
 						if dayIdx == 0 {
 							if day.Weekday() != chartData.FirstWeekday && !chartData.FirstDayFound {
 								<td
- 									class="day-square h-4 border-4 border-white bg-white-200"
+									class="day-square h-4 border-4 border-white bg-white-200"
 								></td>
 							} else {
 								<span class="hidden found">{ updateFirstDayFound(&chartData) }</span>
 							}
 						}
 						<td
- 							class={ "day-square", "h-4", "rounded", "border-4", "border-white", "bg-gray-100", getClassForDay(day, chartData.WorkoutSetCounts) }
+							class={ "day-square", "h-4", "rounded", "border-4", "border-white", "bg-gray-100", getClassForDay(day, chartData.WorkoutSetCounts) }
 						>
 							<span class="hidden tooltip absolute">{ day.Format("2006-01-02") }</span>
 						</td>

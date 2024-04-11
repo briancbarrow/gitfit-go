@@ -29,7 +29,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
 				<tr>
 					<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3">Date</th>
 					<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Exercise</th>
-					<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reps</th>
+					<th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Reps</th>
 					<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Notes</th>
 					<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"></th>
 				</tr>
@@ -39,7 +39,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
 					<tr class="even:bg-gray-50">
 						<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">{ wset.Date }</td>
 						<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ wset.ExerciseName }</td>
-						<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ strconv.Itoa(int(wset.Reps)) }</td>
+						<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500" align="right">{ strconv.Itoa(int(wset.Reps)) }</td>
 						<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ wset.Note.String }</td>
 						<td class="actions whitespace-nowrap px-3 py-4 text-sm text-red-300 hover:text-red-800">
 							<div
@@ -106,7 +106,7 @@ templ WorkoutSetTable(WorkoutSet []tenant_database.ListWorkoutSetsRow, nonceValu
 											tabindex="-1"
 											id="menu-item-0"
 											hx-delete={ "/delete-set/" + strconv.Itoa(int(wset.ID)) + "?date=" + date }
-											hx-target="#table-and-form"
+											hx-target="#set-table"
 											hx-headers={ web.ConvertHeaderToJSON(csrfToken) }
 											hx-include="#table-date"
 										>Delete</button>

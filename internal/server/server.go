@@ -47,12 +47,21 @@ func openDB() (*sql.DB, error) {
 }
 
 func NewServer() *http.Server {
-
-	err := godotenv.Load(".env.local")
-	if err != nil {
-		log.Fatal("Error loading .env file", err)
+	isProd := flag.Bool("isProd", true, "Environment to run the server in")
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
+	fmt.Println("isProd", *isProd)
+	if *isProd {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file", err)
+		}
+	} else {
+		err := godotenv.Load(".env.local")
+		if err != nil {
+			log.Fatal("Error loading .env file", err)
+		}
 	}
-	addr := flag.String("addr", ":8080", "HTTP network address")
 
 	// TODO: Look into if there is a better way to do prettylog
 	logger := slog.New(prettylog.NewHandler(&slog.HandlerOptions{

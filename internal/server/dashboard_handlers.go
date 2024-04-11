@@ -3,12 +3,13 @@ package server
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/briancbarrow/gitfit-go/cmd/web"
+	"github.com/briancbarrow/gitfit-go/cmd/web/ui/components"
 	dashboard_components "github.com/briancbarrow/gitfit-go/cmd/web/ui/components/dashboard"
 	"github.com/briancbarrow/gitfit-go/cmd/web/ui/pages"
 	"github.com/briancbarrow/gitfit-go/internal/database/tenancy"
@@ -141,6 +142,8 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 	}
 
+	var chartData dashboard_components.ChartData
+
 	reps, err := strconv.Atoi(r.Form.Get("reps"))
 	if err != nil {
 		app.serverError(w, r, err)
@@ -166,14 +169,22 @@ func (app *application) HandleNewSet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, r, err)
 	}
 
+	chartData, err = app.GatherChartData(tenantQueries, r.Context())
+	if err != nil {
+		app.serverError(w, r, err)
+	}
+
 	workoutSet, err := app.GetWorkoutSetList(r, dbID, date)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
 
 	templateData := app.newTemplateData(r)
-
-	dashboard_components.WorkoutSetTable(workoutSet, web.NonceValue, templateData.CSRFToken, date).Render(r.Context(), w)
+	childComponents := make([]templ.Component, 2)
+	childComponents[0] = dashboard_components.WorkoutSetTable(workoutSet, web.NonceValue, templateData.CSRFToken, date)
+	childComponents[1] = dashboard_components.Chart(chartData)
+	// dashboard_components.WorkoutSetTable(workoutSet, web.NonceValue, templateData.CSRFToken, date).Render(r.Context(), w)
+	components.SwapOOB(childComponents).Render(r.Context(), w)
 }
 
 type DeleteWorkoutSetPayload struct {
@@ -196,19 +207,19 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 
 	tenantQueries := tenant_database.New(db)
 	params := httprouter.ParamsFromContext(r.Context())
-	fmt.Println("Params: ", params)
+
 	setId := params.ByName("id")
 	setIdInt, err := strconv.ParseInt(setId, 10, 64)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-	fmt.Println("Deleting set with id: ", setId)
+
 	// delete set
 	err = tenantQueries.DeleteWorkoutSet(r.Context(), setIdInt)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-	fmt.Println("Deleted set with id: ", setId)
+
 	var payload DeleteWorkoutSetPayload
 
 	// err = json.NewDecoder(r.Body).Decode(&payload)
@@ -218,14 +229,16 @@ func (app *application) HandleDeleteSet(w http.ResponseWriter, r *http.Request) 
 
 	q := r.URL.Query()
 	payload.Date = q.Get("date")
-	fmt.Println("Got payload: ", payload)
+
 	tableAndFormOptions, err := app.GetTableAndFormOptions(r, dbID, payload.Date)
 	if err != nil {
 		app.serverError(w, r, err)
 	}
-	fmt.Println("Table and form options: ", tableAndFormOptions.WorkoutSetList)
 
-	dashboard_components.TableAndForm(tableAndFormOptions).Render(r.Context(), w)
+	childComponents := make([]templ.Component, 2)
+	childComponents[0] = dashboard_components.WorkoutSetTable(tableAndFormOptions.WorkoutSetList, web.NonceValue, tableAndFormOptions.TemplateData.CSRFToken, payload.Date)
+	childComponents[1] = dashboard_components.Chart(tableAndFormOptions.ChartData)
+	components.SwapOOB(childComponents).Render(r.Context(), w)
 }
 
 func (app *application) GatherChartData(tenantQueries *tenant_database.Queries, reqContext context.Context) (dashboard_components.ChartData, error) {

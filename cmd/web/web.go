@@ -11,7 +11,7 @@ const NonceValue = NonceKey("nonce")
 
 type HxHeader struct {
 	XCSRFToken string `json:"X-CSRF-Token"`
-	Date       string `json:"Date"`
+	HXDate     string `json:"HX-Date"`
 }
 
 func ConvertHeaderToJSON(token string) string {
@@ -20,5 +20,6 @@ func ConvertHeaderToJSON(token string) string {
 	if err != nil {
 		log.Println(err)
 	}
+
 	return string(jsonData)
 }
